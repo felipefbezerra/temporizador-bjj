@@ -1,11 +1,13 @@
 # Temporizador BJJ
 
-Temporizador de rondas, tabata e cronômetro para treinos e lutas de jiu-jitsu. Funciona offline e pode ser instalado no celular como app.
+Temporizador de rondas, circuito e cronômetro para treinos e lutas de jiu-jitsu. Funciona offline e pode ser instalado no celular como app.
 
 ## Funções
 
-- **Rondas e Tabata** com predefinições de BJJ (tempos de luta IBJJF por faixa, rola 6×6, drills).
-- **Temas de posição:** escolha posições (passagem, costas, meia-guarda ou as suas) e o app mostra uma por ronda, em ordem ou sorteada. No Tabata o tema troca a cada ciclo.
+- **Rondas** com predefinições de BJJ (tempos de luta IBJJF por faixa, rola 6×6).
+- **Circuito:** monte estações com nome e tempo próprios (sprawl, fuga de quadril, drills), descanso entre estações, número de voltas e descanso entre voltas.
+- **Temas de posição:** escolha posições (passagem, costas, meia-guarda ou as suas) e o app mostra uma por ronda, em ordem ou sorteada.
+- **Tema claro e escuro:** segue o celular ou fica fixo, na aba Treinos.
 - **Treinos:** cada sessão com pelo menos 30 s de trabalho fica salva, com calendário do mês, rondas, tempo de tatame, semanas seguidas e posições treinadas.
 - **Sua faixa:** escolha a faixa e os graus. A cor dela vira o destaque do app e aparece na tela de luta.
 - **Cronômetro** com voltas.
