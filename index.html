@@ -35,6 +35,7 @@ img{max-width:100%}
   --fg:#f4f4f2;
   --muted:#8d8e91;
   --accent:#9cf04a;
+  --accent-ink:#16200c;
   --prep:#f3ea3a;
   --work:#8ef04a;
   --rest:#ee3a2c;
@@ -70,7 +71,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .total b{color:var(--fg);font-weight:500;font-variant-numeric:tabular-nums}
 .start{display:flex;align-items:center;justify-content:center;gap:12px;margin:18px max(16px,env(safe-area-inset-right,0px)) 22px max(16px,env(safe-area-inset-left,0px));width:calc(100% - 2*max(16px,env(safe-area-inset-left,0px)));background:var(--band);border-radius:16px;padding:18px;font-size:1.5rem;text-transform:uppercase;font-weight:500}
 .start svg{width:30px;height:30px}
-.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:8px max(16px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));border-top:1px solid var(--line)}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:8px max(16px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));border-top:1px solid var(--line)}
 .tab{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 0;border-radius:24px;text-transform:uppercase;font-size:.78rem;letter-spacing:.03em}
 .tab svg{width:30px;height:30px}
 .tab[aria-selected="true"]{background:var(--band)}
@@ -79,7 +80,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;justify-content:center;z-index:20}
 .sheet{width:100%;max-width:560px;background:var(--panel);border-radius:20px 20px 0 0;padding:20px max(16px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:18px}
 .sheet h2{margin:0;font-size:1.5rem;font-weight:500;text-transform:uppercase;display:flex;align-items:center;gap:10px}
-.sheet h2 .dot{margin:0;width:16px;height:16px}
+.sheet h2 .dot{margin:0;width:16px;height:16px;align-self:center}
 .fields{display:flex;justify-content:center;gap:18px;align-items:flex-end}
 .field{display:flex;flex-direction:column;align-items:center;gap:8px}
 .field label{color:var(--muted);text-transform:uppercase;font-size:.85rem;letter-spacing:.06em}
@@ -91,7 +92,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .step button{width:52px;height:44px;border-radius:12px;background:var(--band);font-size:1.4rem}
 .sheet .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .sheet .actions button{padding:14px;border-radius:12px;background:var(--band);text-transform:uppercase;font-size:1.15rem}
-.sheet .actions .ok{background:var(--accent);color:#16200c;font-weight:600}
+.sheet .actions .ok{background:var(--accent);color:var(--accent-ink);font-weight:600}
 .hint{color:var(--muted);font-size:.85rem;text-transform:uppercase;text-align:center;margin:-6px 0 0;letter-spacing:.03em}
 
 /* Tela de luta */
@@ -124,12 +125,70 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .sw-clock small{font-size:.45em;color:var(--muted)}
 .sw-btns{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%}
 .sw-btns button{padding:18px;border-radius:16px;background:var(--band);text-transform:uppercase;font-size:1.3rem;font-weight:500}
-.sw-btns .go{background:var(--accent);color:#16200c}
+.sw-btns .go{background:var(--accent);color:var(--accent-ink)}
 .sw-btns .go.stop{background:var(--rest);color:#fff}
 .laps{width:100%;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .lap{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line);font-size:1.2rem;font-variant-numeric:tabular-nums;text-transform:uppercase}
 .lap span:first-child{color:var(--muted)}
 .empty{color:var(--muted);text-align:center;text-transform:uppercase;font-size:.95rem;letter-spacing:.04em;padding:10px 0}
+
+/* Temas de posição */
+.row .val.txt{font-size:1.5rem;color:var(--muted)}
+.row .val.txt.on{color:var(--fg)}
+.theme-list{display:flex;flex-wrap:wrap;gap:8px;max-height:38vh;overflow-y:auto}
+.theme-list .chip{font-size:.95rem;padding:8px 14px}
+.theme-list .chip.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.theme-list .chip .x{margin-left:4px;opacity:.6}
+.add-theme{display:flex;gap:8px}
+.add-theme input{flex:1;min-width:0;font:inherit;font-size:1.05rem;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.add-theme button{padding:0 16px;border-radius:12px;background:var(--band);text-transform:uppercase}
+.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--bg);border-radius:12px;padding:4px;gap:4px}
+.seg button{padding:10px;border-radius:9px;text-transform:uppercase;font-size:.95rem;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--band);color:var(--fg)}
+.theme-name{font-size:clamp(1.6rem,7vw,3rem);font-weight:600;text-transform:uppercase;line-height:1.05;margin-top:.3em;padding:.12em .5em;border:3px solid currentColor;border-radius:10px;max-width:100%;text-wrap:balance}
+.theme-name.next{font-size:clamp(1.1rem,4.5vw,1.7rem);border-width:2px;font-weight:500}
+
+/* Faixa */
+.belt{--belt:#f2f1ec;--tip:#111;position:relative;height:30px;width:100%;border-radius:4px;background:var(--belt);box-shadow:inset 0 0 0 1px rgba(255,255,255,.2),inset 0 -4px 0 rgba(0,0,0,.18)}
+.belt-tip{position:absolute;right:9%;top:0;bottom:0;width:26%;background:var(--tip);display:flex;justify-content:flex-end;gap:7%;padding:0 7%}
+.belt-tip i{flex:0 0 8%;background:#f4f4f2}
+.belt.sm{height:14px;width:96px;border-radius:3px}
+.run .belt.sm{box-shadow:0 0 0 2px rgba(0,0,0,.25)}
+.belt-swatches{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.belt-swatches button{display:flex;flex-direction:column;gap:6px;align-items:center;padding:8px 4px;border-radius:12px;border:2px solid transparent;text-transform:uppercase;font-size:.8rem;letter-spacing:.04em}
+.belt-swatches button[aria-pressed="true"]{border-color:var(--accent)}
+.belt-swatches .sw-color{width:100%;height:26px;border-radius:4px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
+
+/* Histórico */
+.hist{display:flex;flex-direction:column;gap:18px;padding-block:18px 24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.profile{display:flex;flex-direction:column;gap:12px;background:var(--panel);border-radius:16px;padding:16px}
+.profile-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.profile-head b{font-size:1.5rem;font-weight:500;text-transform:uppercase}
+.profile-head span{color:var(--muted);text-transform:uppercase;font-size:.95rem;letter-spacing:.03em}
+.link{color:var(--accent);text-transform:uppercase;font-size:1rem;letter-spacing:.03em}
+.month-nav{display:flex;justify-content:space-between;align-items:center;text-transform:uppercase;font-size:1.3rem;font-weight:500}
+.month-nav button{width:44px;height:44px;border-radius:12px;background:var(--panel);font-size:1.4rem}
+.month-nav button:disabled{opacity:.3;cursor:default}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{background:var(--panel);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.stat b{font-size:2.1rem;font-weight:500;line-height:1.05;font-variant-numeric:tabular-nums}
+.stat span{color:var(--muted);text-transform:uppercase;font-size:.8rem;letter-spacing:.05em}
+.streak{display:flex;align-items:center;gap:10px;color:var(--muted);text-transform:uppercase;font-size:.95rem;letter-spacing:.03em}
+.streak b{color:var(--fg);font-weight:500}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;text-align:center}
+.cal .wd{color:var(--muted);font-size:.8rem;text-transform:uppercase;padding-bottom:2px}
+.cal .d{aspect-ratio:1;max-width:100%;display:flex;align-items:center;justify-content:center;border-radius:8px;background:var(--panel);font-size:.95rem;font-variant-numeric:tabular-nums;color:var(--muted)}
+.cal .d.l1{background:color-mix(in srgb,var(--accent) 45%,var(--panel));color:var(--fg)}
+.cal .d.l2{background:var(--accent);color:var(--accent-ink);font-weight:600}
+.cal .d.today{box-shadow:inset 0 0 0 2px var(--fg)}
+.sessions{display:flex;flex-direction:column}
+.sess{display:grid;grid-template-columns:1fr auto;gap:2px 12px;padding:12px 0;border-bottom:1px solid var(--line);align-items:center}
+.sess-when{color:var(--muted);text-transform:uppercase;font-size:.85rem;letter-spacing:.04em}
+.sess-what{font-size:1.2rem;text-transform:uppercase;font-variant-numeric:tabular-nums;min-width:0}
+.sess-themes{grid-column:1/2;color:var(--muted);font-size:.9rem;min-width:0}
+.sess-del{grid-row:1/4;grid-column:2;color:var(--muted);padding:8px;border-radius:10px;text-transform:uppercase;font-size:.85rem}
+.sess-del.confirm{background:var(--rest);color:#fff}
+.section-title{color:var(--muted);text-transform:uppercase;font-size:.95rem;letter-spacing:.06em;margin:0}
 @media (prefers-reduced-motion:reduce){.run{transition:none}}
 </style>
 </head>
@@ -164,6 +223,25 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     <div class="laps" id="laps"></div>
   </main>
 
+  <main class="scroll" id="view-hist" hidden>
+    <div class="hist">
+      <div class="profile">
+        <div class="profile-head"><div><b id="belt-name">Sem faixa</b> <span id="belt-degrees"></span></div><button type="button" class="link" id="btn-belt">Alterar faixa</button></div>
+        <div id="belt-big"></div>
+      </div>
+      <div class="month-nav"><button type="button" id="m-prev" aria-label="Mês anterior">‹</button><span id="m-label">Outubro 2026</span><button type="button" id="m-next" aria-label="Próximo mês">›</button></div>
+      <div class="stats">
+        <div class="stat"><b id="st-count">0</b><span>Treinos</span></div>
+        <div class="stat"><b id="st-rounds">0</b><span>Rondas</span></div>
+        <div class="stat"><b id="st-time">0</b><span id="st-time-unit">Min de tatame</span></div>
+      </div>
+      <div class="streak" id="streak"></div>
+      <div class="cal" id="cal"></div>
+      <h3 class="section-title">Treinos do mês</h3>
+      <div class="sessions" id="sessions"></div>
+    </div>
+  </main>
+
   <nav class="tabs" role="tablist">
     <button class="tab" role="tab" data-tab="tabata" type="button">
       <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="16" cy="18" r="11"/><path d="M13 3h6M16 3v4M16 13v6M25 7l2 2"/></svg>Tabata</button>
@@ -171,6 +249,8 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
       <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="16" cy="16" r="12"/><path d="M16 16l-6-6"/></svg>Rondas</button>
     <button class="tab" role="tab" data-tab="sw" type="button">
       <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="16" cy="16" r="12"/><circle cx="16" cy="16" r="1.6" fill="currentColor"/></svg>Cronômetro</button>
+    <button class="tab" role="tab" data-tab="hist" type="button">
+      <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="12" width="26" height="8" rx="1.5"/><path d="M19 12v8M23 12v8M13 20l-3 8M17 20l3 8"/></svg>Treinos</button>
   </nav>
 </div>
 
@@ -190,11 +270,34 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
   </div>
 </div>
 
+<div class="sheet-bg" id="theme-sheet" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="theme-title">
+    <h2 id="theme-title"><span class="dot" style="background:var(--accent)"></span>Temas de posição</h2>
+    <p class="hint" style="margin:0;text-align:left">Toque para escolher as posições. O tema aparece grande na tela durante cada ronda.</p>
+    <div class="theme-list" id="theme-list"></div>
+    <form class="add-theme" id="theme-add"><input id="theme-input" type="text" maxlength="32" placeholder="Nova posição, ex.: De la Riva" aria-label="Nova posição"><button type="submit">Adicionar</button></form>
+    <div class="seg" role="group" aria-label="Ordem dos temas"><button type="button" data-order="seq">Em ordem</button><button type="button" data-order="rand">Sortear</button></div>
+    <div class="actions"><button type="button" id="theme-clear">Desligar</button><button type="button" class="ok" id="theme-ok">OK</button></div>
+  </div>
+</div>
+
+<div class="sheet-bg" id="belt-sheet" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="belt-title">
+    <h2 id="belt-title">Sua faixa</h2>
+    <div class="belt-swatches" id="belt-swatches"></div>
+    <div id="belt-preview"></div>
+    <div class="fields"><div class="field wide"><label for="in-degrees">Graus</label><input id="in-degrees" type="number" inputmode="numeric" min="0" max="4"><div class="step"><button type="button" data-deg="-1" aria-label="Menos um grau">−</button><button type="button" data-deg="1" aria-label="Mais um grau">+</button></div></div></div>
+    <p class="hint">A cor da faixa vira a cor de destaque do app</p>
+    <div class="actions"><button type="button" id="belt-cancel">Cancelar</button><button type="button" class="ok" id="belt-ok">OK</button></div>
+  </div>
+</div>
+
 <section class="run" id="run" hidden>
-  <div class="run-head"><span id="run-mode">Rondas</span><button type="button" id="run-stop">Encerrar</button></div>
+  <div class="run-head"><span id="run-mode">Rondas</span><span id="run-belt"></span><button type="button" id="run-stop">Encerrar</button></div>
   <div class="run-main" id="run-main" title="Toque para pausar">
     <div class="phase-name" id="run-phase">Preparar</div>
     <div class="clock" id="run-clock">0:30</div>
+    <div class="theme-name" id="run-theme" hidden></div>
     <div class="counters" id="run-counters"></div>
     <div class="paused-tag" id="run-paused" hidden>Pausado</div>
   </div>
@@ -220,8 +323,20 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
   };
 
   const DEFAULTS = {
-    rondas: {prep:30, work:300, rest:90, rounds:99, relax:120},
-    tabata: {prep:45, work:30, rest:5, rounds:12, cycles:4, cycleRest:90, relax:120}
+    rondas: {prep:30, work:300, rest:90, rounds:99, relax:120, themes:[], themeOrder:'seq'},
+    tabata: {prep:45, work:30, rest:5, rounds:12, cycles:4, cycleRest:90, relax:120, themes:[], themeOrder:'seq'}
+  };
+
+  const POSITIONS = ['Passagem de guarda','Guarda fechada','Meia-guarda','Guarda aberta','Raspagem','Montada',
+    'Costas','Cem quilos','Joelho na barriga','Queda','Saída de montada','Saída de cem quilos','Finalização'];
+
+  // Cores das faixas adultas. "tip" é a ponteira onde ficam os graus; na preta ela é vermelha.
+  const BELTS = {
+    branca: {name:'Branca', color:'#f2f1ec', tip:'#111111', accent:'#f2f1ec', ink:'#1c1d1f', max:4},
+    azul:   {name:'Azul',   color:'#1f5fd1', tip:'#111111', accent:'#5a95f7', ink:'#0b1630', max:4},
+    roxa:   {name:'Roxa',   color:'#6a2fb0', tip:'#111111', accent:'#b07cf4', ink:'#1d0b33', max:4},
+    marrom: {name:'Marrom', color:'#6b3f1d', tip:'#111111', accent:'#c9925c', ink:'#24140a', max:4},
+    preta:  {name:'Preta',  color:'#121212', tip:'#d22b1f', accent:'#ef4a3d', ink:'#ffffff', max:6}
   };
 
   // Predefinições de BJJ. Tempos de luta seguem a tabela IBJJF para adultos.
@@ -242,12 +357,18 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     ]
   };
 
+  function themeDesc(unit){
+    return c => !c.themes.length ? 'Mostra uma posição para treinar em cada '+unit
+      : (c.themeOrder==='rand' ? 'Sorteado a cada '+unit : 'Um tema por '+unit+', em ordem');
+  }
+
   const FIELDS = {
     rondas: [
       {k:'prep', name:'Preparar', desc:'Contagem decrescente antes de começar', color:'var(--prep)', type:'time'},
       {k:'work', name:'Exercício', desc:'Fazer exercícios durante este tempo', color:'var(--work)', type:'time', min:1},
       {k:'rest', name:'Descansar', desc:'Descansar durante este tempo', color:'var(--rest)', type:'time'},
       {k:'rounds', name:'Rondas', desc:'Uma ronda é trabalho + descanso', color:'var(--round)', type:'count'},
+      {k:'themes', name:'Temas de posição', desc:themeDesc('ronda'), color:'var(--accent)', type:'themes'},
       {k:'relax', name:'Relaxe', desc:'Relaxe após o treino', color:'var(--relax)', type:'time'}
     ],
     tabata: [
@@ -257,6 +378,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
       {k:'rounds', name:'Rondas', desc:'Uma ronda é trabalho + descanso', color:'var(--round)', type:'count'},
       {k:'cycles', name:'Ciclos', desc:c=>'Um ciclo são '+c.rounds+(c.rounds==1?' ronda':' rondas'), color:'var(--cycle)', type:'count'},
       {k:'cycleRest', name:'Descanso entre ciclos', desc:'Intervalo de recuperação', color:'var(--cycle)', type:'time'},
+      {k:'themes', name:'Temas de posição', desc:themeDesc('ciclo'), color:'var(--accent)', type:'themes'},
       {k:'relax', name:'Relaxe', desc:'Relaxe após o treino', color:'var(--relax)', type:'time'}
     ]
   };
@@ -272,7 +394,10 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
   };
   const draft = {rondas:{...saved.rondas}, tabata:{...saved.tabata}};
   let tab = store.get('bjj.tab') || 'rondas';
-  if(!['rondas','tabata','sw'].includes(tab)) tab = 'rondas';
+  if(!['rondas','tabata','sw','hist'].includes(tab)) tab = 'rondas';
+  let customPositions = store.get('bjj.positions') || [];
+  let belt = store.get('bjj.belt') || null;   // {k:'azul', degrees:2}
+  let history = store.get('bjj.history') || [];
 
   const $ = id => document.getElementById(id);
 
@@ -314,13 +439,15 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
   /* ---------- Configuração ---------- */
   function render(){
     document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected', String(b.dataset.tab===tab)));
-    const isSw = tab==='sw';
-    $('view-timer').hidden = isSw;
+    const isSw = tab==='sw', isHist = tab==='hist', isTimer = !isSw && !isHist;
+    $('view-timer').hidden = !isTimer;
     $('view-sw').hidden = !isSw;
-    $('mode-title').textContent = isSw ? 'Cronômetro' : (tab==='tabata' ? 'Tabata' : 'Rondas');
-    $('btn-cancel').style.visibility = isSw ? 'hidden' : 'visible';
-    $('btn-save').style.visibility = isSw ? 'hidden' : 'visible';
-    if(isSw) return;
+    $('view-hist').hidden = !isHist;
+    $('mode-title').textContent = isSw ? 'Cronômetro' : isHist ? 'Treinos' : (tab==='tabata' ? 'Tabata' : 'Rondas');
+    $('btn-cancel').style.visibility = isTimer ? 'visible' : 'hidden';
+    $('btn-save').style.visibility = isTimer ? 'visible' : 'hidden';
+    if(isHist) renderHistory();
+    if(!isTimer) return;
 
     const c = draft[tab];
     const dirty = JSON.stringify(c) !== JSON.stringify(saved[tab]);
@@ -329,11 +456,12 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 
     $('list').innerHTML = FIELDS[tab].map(f=>{
       const desc = typeof f.desc==='function' ? f.desc(c) : f.desc;
-      const val = f.type==='time' ? fmt(c[f.k], true) : c[f.k];
+      const val = f.type==='time' ? fmt(c[f.k], true) : f.type==='themes' ? (c.themes.length || 'Não') : c[f.k];
+      const cls = f.type==='themes' ? ' txt'+(c.themes.length?' on':'') : '';
       return `<button class="row" type="button" data-k="${f.k}">
         <span class="dot" style="background:${f.color}"></span>
         <span><div class="name">${f.name}</div><div class="desc">${desc}</div></span>
-        <span class="val">${val}</span><span class="chev" aria-hidden="true">›</span></button>`;
+        <span class="val${cls}">${val}</span><span class="chev" aria-hidden="true">›</span></button>`;
     }).join('');
 
     $('presets').innerHTML = PRESETS[tab].map((p,i)=>{
@@ -365,6 +493,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
   $('list').addEventListener('click', e=>{
     const b = e.target.closest('.row'); if(!b) return;
     editing = FIELDS[tab].find(f=>f.k===b.dataset.k);
+    if(editing.type==='themes'){ editing = null; openThemeSheet(); return; }
     const v = draft[tab][editing.k];
     $('sheet-name').textContent = editing.name;
     $('sheet-dot').style.background = editing.color;
@@ -382,6 +511,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
   $('sheet').addEventListener('click', e=>{ if(e.target===$('sheet')) closeSheet(); });
   document.addEventListener('keydown', e=>{
     if(!$('sheet').hidden){ if(e.key==='Escape') closeSheet(); if(e.key==='Enter') $('sheet-ok').click(); }
+    if(e.key==='Escape'){ $('theme-sheet').hidden = true; $('belt-sheet').hidden = true; }
   });
   $('sheet').addEventListener('click', e=>{
     const b = e.target.closest('[data-step]'); if(!b) return;
@@ -401,6 +531,122 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     draft[tab][editing.k] = v;
     closeSheet(); render();
   });
+
+  /* ---------- Temas de posição ---------- */
+  let themePick = null;
+  const esc = t => String(t).replace(/[&<>"]/g, ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+  function openThemeSheet(){
+    themePick = {themes:[...draft[tab].themes], order:draft[tab].themeOrder};
+    renderThemeSheet();
+    $('theme-sheet').hidden = false;
+  }
+  function renderThemeSheet(){
+    const all = [...POSITIONS, ...customPositions];
+    themePick.themes.forEach(t=>{ if(!all.includes(t)) all.push(t); });
+    $('theme-list').innerHTML = all.map(t=>{
+      const on = themePick.themes.includes(t), custom = customPositions.includes(t);
+      const n = on ? themePick.themes.indexOf(t)+1 : 0;
+      return `<button type="button" class="chip${on?' on':''}" data-t="${esc(t)}">${on && themePick.order==='seq' ? n+'. ' : ''}${esc(t)}${custom ? '<span class="x" data-del="'+esc(t)+'" aria-label="Remover">✕</span>' : ''}</button>`;
+    }).join('');
+    document.querySelectorAll('#theme-sheet [data-order]').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.order===themePick.order)));
+  }
+  $('theme-list').addEventListener('click', e=>{
+    const del = e.target.closest('[data-del]');
+    if(del){
+      const t = del.dataset.del;
+      customPositions = customPositions.filter(x=>x!==t); store.set('bjj.positions', customPositions);
+      themePick.themes = themePick.themes.filter(x=>x!==t); renderThemeSheet(); return;
+    }
+    const b = e.target.closest('[data-t]'); if(!b) return;
+    const t = b.dataset.t;
+    themePick.themes = themePick.themes.includes(t) ? themePick.themes.filter(x=>x!==t) : [...themePick.themes, t];
+    renderThemeSheet();
+  });
+  $('theme-add').addEventListener('submit', e=>{
+    e.preventDefault();
+    const t = $('theme-input').value.trim().replace(/\s+/g,' ');
+    if(!t) return;
+    if(![...POSITIONS, ...customPositions].some(x=>x.toLowerCase()===t.toLowerCase())){
+      customPositions = [...customPositions, t]; store.set('bjj.positions', customPositions);
+    }
+    if(!themePick.themes.includes(t)) themePick.themes = [...themePick.themes, t];
+    $('theme-input').value = ''; renderThemeSheet();
+  });
+  document.querySelector('#theme-sheet .seg').addEventListener('click', e=>{
+    const b = e.target.closest('[data-order]'); if(!b) return;
+    themePick.order = b.dataset.order; renderThemeSheet();
+  });
+  $('theme-clear').addEventListener('click', ()=>{ draft[tab] = {...draft[tab], themes:[]}; $('theme-sheet').hidden = true; render(); });
+  $('theme-ok').addEventListener('click', ()=>{
+    draft[tab] = {...draft[tab], themes:themePick.themes, themeOrder:themePick.order};
+    $('theme-sheet').hidden = true; render();
+  });
+  $('theme-sheet').addEventListener('click', e=>{ if(e.target===$('theme-sheet')) $('theme-sheet').hidden = true; });
+
+  // Distribui os temas: Rondas troca a cada ronda, Tabata troca a cada ciclo (as rondas são curtas demais).
+  function assignThemes(mode, c, seq){
+    if(!c.themes.length) return;
+    const list = c.themes;
+    let bag = [], last = null;
+    const draw = i => {
+      if(c.themeOrder!=='rand') return list[i % list.length];
+      if(!bag.length){ bag = [...list].sort(()=>Math.random()-.5); if(bag.length>1 && bag[0]===last) bag.push(bag.shift()); }
+      return last = bag.shift();
+    };
+    const byKey = {};
+    let n = 0;
+    seq.forEach(s=>{
+      if(s.type!=='work') return;
+      const key = mode==='tabata' ? s.cycle : s.round;
+      if(!(key in byKey)) byKey[key] = draw(n++);
+      s.theme = byKey[key];
+    });
+  }
+
+  /* ---------- Faixa ---------- */
+  function beltHTML(b, small){
+    if(!b) return '';
+    const d = BELTS[b.k];
+    const stripes = Array.from({length:b.degrees}, ()=>'<i></i>').join('');
+    return `<div class="belt${small?' sm':''}" style="--belt:${d.color};--tip:${d.tip}" role="img" aria-label="Faixa ${d.name.toLowerCase()}, ${b.degrees} ${b.degrees==1?'grau':'graus'}"><span class="belt-tip">${stripes}</span></div>`;
+  }
+  function applyBelt(){
+    const root = document.documentElement.style;
+    if(belt && BELTS[belt.k]){ root.setProperty('--accent', BELTS[belt.k].accent); root.setProperty('--accent-ink', BELTS[belt.k].ink); }
+    else { root.removeProperty('--accent'); root.removeProperty('--accent-ink'); }
+  }
+  let beltPick = null;
+  function openBeltSheet(){
+    beltPick = belt ? {...belt} : {k:'branca', degrees:0};
+    renderBeltSheet(); $('belt-sheet').hidden = false;
+  }
+  function renderBeltSheet(){
+    $('belt-swatches').innerHTML = Object.entries(BELTS).map(([k,d])=>
+      `<button type="button" data-belt="${k}" aria-pressed="${k===beltPick.k}"><span class="sw-color" style="background:${d.color}"></span>${d.name}</button>`).join('');
+    beltPick.degrees = Math.min(BELTS[beltPick.k].max, beltPick.degrees);
+    $('in-degrees').max = BELTS[beltPick.k].max;
+    $('in-degrees').value = beltPick.degrees;
+    $('belt-preview').innerHTML = beltHTML(beltPick);
+  }
+  $('belt-swatches').addEventListener('click', e=>{
+    const b = e.target.closest('[data-belt]'); if(!b) return;
+    beltPick.k = b.dataset.belt; renderBeltSheet();
+  });
+  document.querySelector('#belt-sheet .step').addEventListener('click', e=>{
+    const b = e.target.closest('[data-deg]'); if(!b) return;
+    beltPick.degrees = Math.max(0, Math.min(BELTS[beltPick.k].max, beltPick.degrees + +b.dataset.deg)); renderBeltSheet();
+  });
+  $('in-degrees').addEventListener('input', ()=>{
+    beltPick.degrees = Math.max(0, Math.min(BELTS[beltPick.k].max, Math.floor(+$('in-degrees').value||0)));
+    $('belt-preview').innerHTML = beltHTML(beltPick);
+  });
+  $('belt-cancel').addEventListener('click', ()=>{ $('belt-sheet').hidden = true; });
+  $('belt-sheet').addEventListener('click', e=>{ if(e.target===$('belt-sheet')) $('belt-sheet').hidden = true; });
+  $('belt-ok').addEventListener('click', ()=>{
+    belt = {...beltPick}; store.set('bjj.belt', belt); applyBelt();
+    $('belt-sheet').hidden = true; render();
+  });
+  $('btn-belt').addEventListener('click', openBeltSheet);
 
   /* ---------- Som ---------- */
   let ac = null;
@@ -442,10 +688,13 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     const c = {...draft[tab]};
     const seq = buildSequence(tab, c);
     if(!seq.length) return;
+    assignThemes(tab, c, seq);
     audio();
-    run = {mode:tab, c, seq, i:0, paused:false, remaining:seq[0].dur, endAt:0, lastTick:null, finished:false};
+    run = {mode:tab, c, seq, i:0, paused:false, remaining:seq[0].dur, endAt:0, lastTick:null, finished:false,
+      startedAt:Date.now(), lastNow:performance.now(), active:0, work:0, rounds:0, done:[], saved:false};
     run.endAt = performance.now() + run.remaining*1000;
     $('run-mode').textContent = tab==='tabata' ? 'Tabata' : 'Rondas';
+    $('run-belt').innerHTML = beltHTML(belt, true);
     $('run').hidden = false;
     lockScreen();
     enterPhase(false);
@@ -458,6 +707,10 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     el.classList.toggle('light-text', p.text==='light');
     el.classList.toggle('dark-text', p.text!=='light');
     $('run-phase').textContent = p.name;
+    const th = s.type==='work' ? s.theme : (run.seq[run.i+1] && run.seq[run.i+1].theme);
+    $('run-theme').hidden = !th;
+    $('run-theme').classList.toggle('next', s.type!=='work');
+    $('run-theme').textContent = th ? (s.type==='work' ? th : 'Próximo: '+th) : '';
     run.lastTick = null;
     if(sound){ (s.type==='work' ? SOUND.work : s.type==='rest' || s.type==='cycle' ? SOUND.rest : SOUND.other)(); }
     renderCounters();
@@ -472,7 +725,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     }
     $('run-counters').innerHTML = parts.join('');
     const nx = run.seq[run.i+1];
-    $('run-next').textContent = nx ? 'A seguir: '+PHASE[nx.type].name+' '+fmtClock(nx.dur) : 'Último intervalo';
+    $('run-next').textContent = nx ? 'A seguir: '+(nx.theme || PHASE[nx.type].name)+' '+fmtClock(nx.dur) : 'Último intervalo';
   }
   function loop(){
     cancelAnimationFrame(raf);
@@ -480,10 +733,17 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
       if(!run) return;
       const now = performance.now();
       if(!run.paused && !run.finished){
+        const dt = Math.min(1, (now - run.lastNow)/1000);
+        run.active += dt;
+        if(run.seq[run.i].type==='work') run.work += dt;
+      }
+      run.lastNow = now;
+      if(!run.paused && !run.finished){
         run.remaining = (run.endAt - now)/1000;
         const whole = Math.ceil(run.remaining);
         if(whole<=3 && whole>=1 && run.lastTick!==whole && run.seq[run.i].dur>3){ run.lastTick = whole; SOUND.tick(); }
         if(run.remaining<=0){
+          countRound(true);
           if(run.i < run.seq.length-1){
             const over = -run.remaining;
             run.i++;
@@ -511,11 +771,30 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     $('run-paused').hidden = !run.paused;
     $('run-toggle').textContent = run.finished ? 'Repetir' : run.paused ? 'Continuar' : 'Pausar';
   }
+  // Conta a ronda quando o intervalo de trabalho termina, ou quando é pulado depois da metade.
+  function countRound(full){
+    const s = run.seq[run.i];
+    if(s.type!=='work' || s.counted) return;
+    if(full || s.dur - run.remaining >= s.dur/2){
+      s.counted = true; run.rounds++;
+      if(s.theme && !run.done.includes(s.theme)) run.done.push(s.theme);
+    }
+  }
+  function saveRun(){
+    if(!run || run.saved || run.work < 30) return false;
+    run.saved = true;
+    history = [...history, {t:run.startedAt, mode:run.mode, work:Math.round(run.work), active:Math.round(run.active),
+      rounds:run.rounds, roundLen:run.c.work, themes:run.done, done:run.finished}].slice(-1000);
+    store.set('bjj.history', history);
+    return true;
+  }
   function finish(){
     run.finished = true; run.remaining = 0;
     SOUND.done();
+    const ok = saveRun();
     $('run-phase').textContent = 'Treino concluído';
-    $('run-next').textContent = 'Bom treino. Oss!';
+    $('run-theme').hidden = true;
+    $('run-next').textContent = ok ? 'Salvo em Treinos. Oss!' : 'Bom treino. Oss!';
     $('run').style.setProperty('--phase', 'var(--work)');
     $('run').classList.remove('light-text'); $('run').classList.add('dark-text');
     unlockScreen();
@@ -533,9 +812,10 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     // "Anterior" reinicia o intervalo atual se já passaram mais de 2 s
     if(dir<0 && s.dur - run.remaining > 2){ /* mantém o índice */ }
     else {
+      if(dir>0) countRound(false);
       const ni = run.i + dir;
       if(ni<0) { /* já no início */ }
-      else if(ni>=run.seq.length){ finish(); return; }
+      else if(ni>=run.seq.length){ countRound(false); finish(); return; }
       else run.i = ni;
     }
     run.remaining = run.seq[run.i].dur;
@@ -543,7 +823,9 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     enterPhase(!run.paused);
   }
   function stopRun(){
+    if(run && !run.finished) saveRun();
     cancelAnimationFrame(raf); run = null; $('run').hidden = true; unlockScreen();
+    if(tab==='hist') render();
   }
 
   $('btn-start').addEventListener('click', startRun);
@@ -589,6 +871,79 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     } else { sw.acc=0; sw.laps=[]; swDraw(); }
   });
 
+  /* ---------- Histórico ---------- */
+  const MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const WD = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  let viewMonth = (()=>{ const d = new Date(); return {y:d.getFullYear(), m:d.getMonth()}; })();
+  let pendingDelete = null;
+  const dayKey = d => d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate();
+  function weekStart(t){ const d = new Date(t); d.setHours(0,0,0,0); d.setDate(d.getDate()-d.getDay()); return d.getTime(); }
+
+  // Semanas seguidas com pelo menos um treino, contando a atual se já tiver treino (senão a partir da anterior).
+  function weekStreak(){
+    const weeks = new Set(history.map(h=>weekStart(h.t)));
+    let w = weekStart(Date.now()), n = 0;
+    if(!weeks.has(w)) w -= 7*864e5;
+    while(weeks.has(w)){ n++; const d = new Date(w); d.setDate(d.getDate()-7); w = d.getTime(); }
+    return n;
+  }
+
+  function renderHistory(){
+    const d = belt && BELTS[belt.k];
+    $('belt-name').textContent = d ? 'Faixa '+d.name.toLowerCase() : 'Sem faixa';
+    $('belt-degrees').textContent = d ? (belt.degrees ? belt.degrees+(belt.degrees==1?' grau':' graus') : 'Lisa') : 'Escolha a sua para colorir o app';
+    $('btn-belt').textContent = d ? 'Alterar' : 'Escolher faixa';
+    $('belt-big').innerHTML = beltHTML(belt);
+    $('belt-big').hidden = !d;
+
+    const {y, m} = viewMonth;
+    const now = new Date();
+    $('m-label').textContent = MONTHS[m]+' '+y;
+    $('m-next').disabled = y>now.getFullYear() || (y===now.getFullYear() && m>=now.getMonth());
+    const inMonth = history.filter(h=>{ const t = new Date(h.t); return t.getFullYear()===y && t.getMonth()===m; });
+
+    const work = inMonth.reduce((a,h)=>a+h.work,0);
+    $('st-count').textContent = inMonth.length;
+    $('st-rounds').textContent = inMonth.reduce((a,h)=>a+h.rounds,0);
+    if(work>=6000){ $('st-time').textContent = (work/3600).toFixed(1).replace('.',','); $('st-time-unit').textContent = 'Horas de tatame'; }
+    else { $('st-time').textContent = Math.round(work/60); $('st-time-unit').textContent = 'Min de tatame'; }
+    const days = new Set(inMonth.map(h=>dayKey(new Date(h.t))));
+    const streak = weekStreak();
+    $('streak').innerHTML = `<span><b>${days.size}</b> ${days.size==1?'dia':'dias'} no tatame</span><span aria-hidden="true">·</span><span><b>${streak}</b> ${streak==1?'semana seguida':'semanas seguidas'}</span>`;
+
+    const perDay = {};
+    inMonth.forEach(h=>{ const k = new Date(h.t).getDate(); perDay[k] = (perDay[k]||0) + h.work; });
+    const first = new Date(y, m, 1).getDay(), total = new Date(y, m+1, 0).getDate();
+    const isThisMonth = y===now.getFullYear() && m===now.getMonth();
+    let cells = WD.map(w=>`<div class="wd">${w[0]}</div>`).join('');
+    for(let i=0;i<first;i++) cells += '<div></div>';
+    for(let dd=1; dd<=total; dd++){
+      const w = perDay[dd]||0, lvl = !w ? '' : w>=1800 ? ' l2' : ' l1';
+      const today = isThisMonth && dd===now.getDate() ? ' today' : '';
+      cells += `<div class="d${lvl}${today}" title="${w ? Math.round(w/60)+' min' : ''}">${dd}</div>`;
+    }
+    $('cal').innerHTML = cells;
+
+    const list = inMonth.map((h,i)=>({h, idx:history.indexOf(h)})).reverse();
+    $('sessions').innerHTML = list.length ? list.map(({h, idx})=>{
+      const t = new Date(h.t);
+      const when = WD[t.getDay()]+', '+t.getDate()+' '+MONTHS[t.getMonth()].slice(0,3).toLowerCase()+' · '+String(t.getHours()).padStart(2,'0')+':'+String(t.getMinutes()).padStart(2,'0');
+      const what = (h.mode==='tabata'?'Tabata':'Rondas')+' · '+h.rounds+(h.rounds==1?' ronda':' rondas')+' · '+Math.max(1,Math.round(h.work/60))+' min'+(h.done?'':' · parcial');
+      const conf = pendingDelete===h.t;
+      return `<div class="sess"><span class="sess-when">${when}</span><span class="sess-what">${what}</span>${h.themes && h.themes.length ? `<span class="sess-themes">${h.themes.map(esc).join(', ')}</span>` : ''}<button type="button" class="sess-del${conf?' confirm':''}" data-del="${h.t}" aria-label="Apagar treino">${conf?'Apagar?':'✕'}</button></div>`;
+    }).join('') : '<div class="empty">Nenhum treino neste mês. Termine uma sessão de Rondas ou Tabata e ela aparece aqui.</div>';
+  }
+  $('m-prev').addEventListener('click', ()=>{ viewMonth = viewMonth.m ? {y:viewMonth.y, m:viewMonth.m-1} : {y:viewMonth.y-1, m:11}; pendingDelete = null; renderHistory(); });
+  $('m-next').addEventListener('click', ()=>{ viewMonth = viewMonth.m<11 ? {y:viewMonth.y, m:viewMonth.m+1} : {y:viewMonth.y+1, m:0}; pendingDelete = null; renderHistory(); });
+  $('sessions').addEventListener('click', e=>{
+    const b = e.target.closest('[data-del]'); if(!b) return;
+    const t = +b.dataset.del;
+    if(pendingDelete===t){ history = history.filter(h=>h.t!==t); store.set('bjj.history', history); pendingDelete = null; }
+    else pendingDelete = t;
+    renderHistory();
+  });
+
+  applyBelt();
   render(); swDraw();
 })();
 </script>
