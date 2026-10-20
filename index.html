@@ -4,12 +4,20 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#1c1d1f">
-<meta name="description" content="Temporizador de rondas, tabata e cronômetro para treinos e lutas de jiu-jitsu.">
+<meta name="description" content="Temporizador de rondas, circuito e cronômetro para treinos e lutas de jiu-jitsu.">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="BJJ Timer">
 <link rel="manifest" href="manifest.webmanifest">
+<script>
+// Aplica o tema antes de desenhar a página, para não piscar.
+(function(){
+  var m = 'auto'; try{ m = JSON.parse(localStorage.getItem('bjj.theme')) || 'auto'; }catch(e){}
+  var dark = m==='dark' || (m!=='light' && !(window.matchMedia && matchMedia('(prefers-color-scheme: light)').matches));
+  document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+})();
+</script>
 <link rel="icon" href="icons/icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <style>
@@ -42,7 +50,25 @@ img{max-width:100%}
   --round:#3fa9ec;
   --cycle:#f3ea3a;
   --relax:#3fa9ec;
+  --edge:rgba(255,255,255,.22);
   --display:"Oswald","Arial Narrow","Roboto Condensed",Impact,sans-serif;
+}
+/* Tema claro: mesmas cores de fase, superfícies claras e destaque mais escuro para dar contraste */
+:root[data-theme="light"]{
+  color-scheme:light;
+  --bg:#f2f2ef;
+  --panel:#ffffff;
+  --band:#e4e4e0;
+  --line:#d5d5d0;
+  --fg:#18191b;
+  --muted:#6b6c6f;
+  --accent:#3b8a12;
+  --accent-ink:#ffffff;
+  --prep:#e8d81c;
+  --round:#2b93d6;
+  --relax:#2b93d6;
+  --cycle:#e8d81c;
+  --edge:rgba(0,0,0,.18);
 }
 html,body{height:100%}
 body{background:var(--bg);color:var(--fg);font-family:var(--display);-webkit-tap-highlight-color:transparent;overflow:hidden}
@@ -93,6 +119,18 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .sheet .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .sheet .actions button{padding:14px;border-radius:12px;background:var(--band);text-transform:uppercase;font-size:1.15rem}
 .sheet .actions .ok{background:var(--accent);color:var(--accent-ink);font-weight:600}
+.name-field{display:flex;flex-direction:column;gap:6px}
+.name-field label{color:var(--muted);text-transform:uppercase;font-size:.85rem;letter-spacing:.06em}
+.name-field input{font:inherit;font-size:1.4rem;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:12px;padding:10px 12px;min-width:0}
+.station-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.station-actions button{padding:10px;border-radius:12px;background:var(--band);text-transform:uppercase;font-size:.95rem}
+.station-actions button:disabled{opacity:.35;cursor:default}
+.station-actions .danger{color:var(--rest)}
+.station-actions .danger.confirm{background:var(--rest);color:#fff}
+.stations-head{color:var(--muted);text-transform:uppercase;font-size:.9rem;letter-spacing:.06em;padding:16px 0 2px}
+.dot.num{display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:600;color:#16200c;margin-top:5px}
+.add-station{width:100%;text-align:left;padding:14px 0 14px 34px;border-bottom:1px solid var(--line);color:var(--accent);text-transform:uppercase;font-size:1.05rem;letter-spacing:.03em}
+.add-station:disabled{opacity:.35;cursor:default}
 .hint{color:var(--muted);font-size:.85rem;text-transform:uppercase;text-align:center;margin:-6px 0 0;letter-spacing:.03em}
 
 /* Tela de luta */
@@ -145,11 +183,14 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .seg{display:grid;grid-template-columns:1fr 1fr;background:var(--bg);border-radius:12px;padding:4px;gap:4px}
 .seg button{padding:10px;border-radius:9px;text-transform:uppercase;font-size:.95rem;color:var(--muted)}
 .seg button[aria-pressed="true"]{background:var(--band);color:var(--fg)}
+.seg.three{grid-template-columns:repeat(3,1fr);background:var(--panel)}
+.appearance{display:flex;flex-direction:column;gap:8px}
+[data-theme="light"] .seg.three button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
 .theme-name{font-size:clamp(1.6rem,7vw,3rem);font-weight:600;text-transform:uppercase;line-height:1.05;margin-top:.3em;padding:.12em .5em;border:3px solid currentColor;border-radius:10px;max-width:100%;text-wrap:balance}
 .theme-name.next{font-size:clamp(1.1rem,4.5vw,1.7rem);border-width:2px;font-weight:500}
 
 /* Faixa */
-.belt{--belt:#f2f1ec;--tip:#111;position:relative;height:30px;width:100%;border-radius:4px;background:var(--belt);box-shadow:inset 0 0 0 1px rgba(255,255,255,.2),inset 0 -4px 0 rgba(0,0,0,.18)}
+.belt{--belt:#f2f1ec;--tip:#111;position:relative;height:30px;width:100%;border-radius:4px;background:var(--belt);box-shadow:inset 0 0 0 1px var(--edge),inset 0 -4px 0 rgba(0,0,0,.18)}
 .belt-tip{position:absolute;right:9%;top:0;bottom:0;width:26%;background:var(--tip);display:flex;justify-content:flex-end;gap:7%;padding:0 7%}
 .belt-tip i{flex:0 0 8%;background:#f4f4f2}
 .belt.sm{height:14px;width:96px;border-radius:3px}
@@ -157,7 +198,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .belt-swatches{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
 .belt-swatches button{display:flex;flex-direction:column;gap:6px;align-items:center;padding:8px 4px;border-radius:12px;border:2px solid transparent;text-transform:uppercase;font-size:.8rem;letter-spacing:.04em}
 .belt-swatches button[aria-pressed="true"]{border-color:var(--accent)}
-.belt-swatches .sw-color{width:100%;height:26px;border-radius:4px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
+.belt-swatches .sw-color{width:100%;height:26px;border-radius:4px;box-shadow:inset 0 0 0 1px var(--edge)}
 
 /* Histórico */
 .hist{display:flex;flex-direction:column;gap:18px;padding-block:18px 24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
@@ -229,6 +270,9 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
         <div class="profile-head"><div><b id="belt-name">Sem faixa</b> <span id="belt-degrees"></span></div><button type="button" class="link" id="btn-belt">Alterar faixa</button></div>
         <div id="belt-big"></div>
       </div>
+      <div class="appearance"><h3 class="section-title">Aparência</h3>
+        <div class="seg three" id="theme-mode" role="group" aria-label="Aparência"><button type="button" data-mode="auto">Automático</button><button type="button" data-mode="light">Claro</button><button type="button" data-mode="dark">Escuro</button></div>
+      </div>
       <div class="month-nav"><button type="button" id="m-prev" aria-label="Mês anterior">‹</button><span id="m-label">Outubro 2026</span><button type="button" id="m-next" aria-label="Próximo mês">›</button></div>
       <div class="stats">
         <div class="stat"><b id="st-count">0</b><span>Treinos</span></div>
@@ -243,8 +287,8 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
   </main>
 
   <nav class="tabs" role="tablist">
-    <button class="tab" role="tab" data-tab="tabata" type="button">
-      <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="16" cy="18" r="11"/><path d="M13 3h6M16 3v4M16 13v6M25 7l2 2"/></svg>Tabata</button>
+    <button class="tab" role="tab" data-tab="circuito" type="button">
+      <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="16" cy="6" r="3"/><circle cx="26" cy="20" r="3"/><circle cx="6" cy="20" r="3"/><path d="M19 7.5l5 9M23.5 22.5H8.5M7.5 17l5.5-9.5"/></svg>Circuito</button>
     <button class="tab" role="tab" data-tab="rondas" type="button">
       <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="16" cy="16" r="12"/><path d="M16 16l-6-6"/></svg>Rondas</button>
     <button class="tab" role="tab" data-tab="sw" type="button">
@@ -257,6 +301,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 <div class="sheet-bg" id="sheet" hidden>
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
     <h2 id="sheet-title"><span class="dot" id="sheet-dot"></span><span id="sheet-name"></span></h2>
+    <div class="name-field" id="fields-name" hidden><label for="in-name">Exercício</label><input id="in-name" type="text" maxlength="40" placeholder="Ex.: Sprawl, drill de passagem"></div>
     <div class="fields" id="fields-time">
       <div class="field"><label for="in-min">Min</label><input id="in-min" type="number" inputmode="numeric" min="0" max="99"><div class="step"><button type="button" data-step="min:-1" aria-label="Menos um minuto">−</button><button type="button" data-step="min:1" aria-label="Mais um minuto">+</button></div></div>
       <div class="colon">:</div>
@@ -266,6 +311,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
       <div class="field wide"><label for="in-count">Quantidade</label><input id="in-count" type="number" inputmode="numeric" min="1" max="99"><div class="step"><button type="button" data-step="count:-1" aria-label="Menos um">−</button><button type="button" data-step="count:1" aria-label="Mais um">+</button></div></div>
     </div>
     <p class="hint" id="sheet-hint"></p>
+    <div class="station-actions" id="station-actions" hidden><button type="button" data-move="-1">↑ Subir</button><button type="button" data-move="1">↓ Descer</button><button type="button" class="danger" id="station-del">Remover</button></div>
     <div class="actions"><button type="button" id="sheet-cancel">Cancelar</button><button type="button" class="ok" id="sheet-ok">OK</button></div>
   </div>
 </div>
@@ -324,7 +370,10 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 
   const DEFAULTS = {
     rondas: {prep:30, work:300, rest:90, rounds:99, relax:120, themes:[], themeOrder:'seq'},
-    tabata: {prep:45, work:30, rest:5, rounds:12, cycles:4, cycleRest:90, relax:120, themes:[], themeOrder:'seq'}
+    circuito: {prep:30, stations:[
+      {name:'Sprawl', dur:45}, {name:'Fuga de quadril', dur:45}, {name:'Ponte', dur:45},
+      {name:'Burpee', dur:45}, {name:'Sit-out', dur:45}, {name:'Entrada de queda', dur:45}],
+      rest:15, rounds:3, cycleRest:90, relax:120}
   };
 
   const POSITIONS = ['Passagem de guarda','Guarda fechada','Meia-guarda','Guarda aberta','Raspagem','Montada',
@@ -332,11 +381,12 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 
   // Cores das faixas adultas. "tip" é a ponteira onde ficam os graus; na preta ela é vermelha.
   const BELTS = {
-    branca: {name:'Branca', color:'#f2f1ec', tip:'#111111', accent:'#f2f1ec', ink:'#1c1d1f', max:4},
-    azul:   {name:'Azul',   color:'#1f5fd1', tip:'#111111', accent:'#5a95f7', ink:'#0b1630', max:4},
-    roxa:   {name:'Roxa',   color:'#6a2fb0', tip:'#111111', accent:'#b07cf4', ink:'#1d0b33', max:4},
-    marrom: {name:'Marrom', color:'#6b3f1d', tip:'#111111', accent:'#c9925c', ink:'#24140a', max:4},
-    preta:  {name:'Preta',  color:'#121212', tip:'#d22b1f', accent:'#ef4a3d', ink:'#ffffff', max:6}
+    // accent/ink: tema escuro; light: tema claro (no claro a faixa branca usa grafite para ser legível)
+    branca: {name:'Branca', color:'#f2f1ec', tip:'#111111', accent:'#f2f1ec', ink:'#1c1d1f', light:['#3a3b3f','#ffffff'], max:4},
+    azul:   {name:'Azul',   color:'#1f5fd1', tip:'#111111', accent:'#5a95f7', ink:'#0b1630', light:['#1f5fd1','#ffffff'], max:4},
+    roxa:   {name:'Roxa',   color:'#6a2fb0', tip:'#111111', accent:'#b07cf4', ink:'#1d0b33', light:['#6a2fb0','#ffffff'], max:4},
+    marrom: {name:'Marrom', color:'#6b3f1d', tip:'#111111', accent:'#c9925c', ink:'#24140a', light:['#7a4a24','#ffffff'], max:4},
+    preta:  {name:'Preta',  color:'#121212', tip:'#d22b1f', accent:'#ef4a3d', ink:'#ffffff', light:['#c62a1e','#ffffff'], max:6}
   };
 
   // Predefinições de BJJ. Tempos de luta seguem a tabela IBJJF para adultos.
@@ -350,10 +400,18 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
       {label:'Luta preta 10 min',  color:'#0c0c0c', v:{prep:10, work:600, rest:0, rounds:1, relax:0}},
       {label:'Rola 6×6 min',       color:'var(--round)', v:{prep:30, work:360, rest:60, rounds:6, relax:120}}
     ],
-    tabata: [
-      {label:'Padrão 12×4',  color:'var(--work)', v:{prep:45, work:30, rest:5, rounds:12, cycles:4, cycleRest:90, relax:120}},
-      {label:'Tabata clássico 20/10', color:'var(--prep)', v:{prep:10, work:20, rest:10, rounds:8, cycles:1, cycleRest:60, relax:60}},
-      {label:'Drill de passagem', color:'var(--round)', v:{prep:15, work:60, rest:15, rounds:6, cycles:3, cycleRest:120, relax:120}}
+    circuito: [
+      {label:'Condicionamento BJJ', color:'var(--work)', v:{prep:30, stations:[
+        {name:'Sprawl', dur:45}, {name:'Fuga de quadril', dur:45}, {name:'Ponte', dur:45},
+        {name:'Burpee', dur:45}, {name:'Sit-out', dur:45}, {name:'Entrada de queda', dur:45}],
+        rest:15, rounds:3, cycleRest:90, relax:120}},
+      {label:'Drills de técnica', color:'var(--round)', v:{prep:15, stations:[
+        {name:'Armlock da guarda', dur:120}, {name:'Raspagem de tesoura', dur:120},
+        {name:'Passagem toreando', dur:120}, {name:'Pegada das costas', dur:120}],
+        rest:20, rounds:2, cycleRest:120, relax:60}},
+      {label:'Circuito curto 30/10', color:'var(--prep)', v:{prep:10, stations:[
+        {name:'Sprawl', dur:30}, {name:'Fuga de quadril', dur:30}, {name:'Burpee', dur:30}, {name:'Ponte', dur:30}],
+        rest:10, rounds:4, cycleRest:60, relax:60}}
     ]
   };
 
@@ -371,14 +429,12 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
       {k:'themes', name:'Temas de posição', desc:themeDesc('ronda'), color:'var(--accent)', type:'themes'},
       {k:'relax', name:'Relaxe', desc:'Relaxe após o treino', color:'var(--relax)', type:'time'}
     ],
-    tabata: [
+    circuito: [
       {k:'prep', name:'Preparar', desc:'Contagem decrescente antes de começar', color:'var(--prep)', type:'time'},
-      {k:'work', name:'Exercício', desc:'Fazer exercícios durante este tempo', color:'var(--work)', type:'time', min:1},
-      {k:'rest', name:'Descansar', desc:'Descansar durante este tempo', color:'var(--rest)', type:'time'},
-      {k:'rounds', name:'Rondas', desc:'Uma ronda é trabalho + descanso', color:'var(--round)', type:'count'},
-      {k:'cycles', name:'Ciclos', desc:c=>'Um ciclo são '+c.rounds+(c.rounds==1?' ronda':' rondas'), color:'var(--cycle)', type:'count'},
-      {k:'cycleRest', name:'Descanso entre ciclos', desc:'Intervalo de recuperação', color:'var(--cycle)', type:'time'},
-      {k:'themes', name:'Temas de posição', desc:themeDesc('ciclo'), color:'var(--accent)', type:'themes'},
+      {k:'stations', type:'stations'},
+      {k:'rest', name:'Descanso entre estações', desc:'Tempo para trocar de exercício', color:'var(--rest)', type:'time'},
+      {k:'rounds', name:'Voltas', desc:c=>'Uma volta passa pelas '+c.stations.length+(c.stations.length==1?' estação':' estações'), color:'var(--round)', type:'count'},
+      {k:'cycleRest', name:'Descanso entre voltas', desc:'Intervalo de recuperação', color:'var(--cycle)', type:'time'},
       {k:'relax', name:'Relaxe', desc:'Relaxe após o treino', color:'var(--relax)', type:'time'}
     ]
   };
@@ -390,11 +446,13 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 
   const saved = {
     rondas: Object.assign({}, DEFAULTS.rondas, store.get('bjj.rondas') || {}),
-    tabata: Object.assign({}, DEFAULTS.tabata, store.get('bjj.tabata') || {})
+    circuito: Object.assign({}, DEFAULTS.circuito, store.get('bjj.circuito') || {})
   };
-  const draft = {rondas:{...saved.rondas}, tabata:{...saved.tabata}};
+  const draft = {rondas:{...saved.rondas}, circuito:{...saved.circuito}};
   let tab = store.get('bjj.tab') || 'rondas';
-  if(!['rondas','tabata','sw','hist'].includes(tab)) tab = 'rondas';
+  if(tab==='tabata') tab = 'circuito';
+  if(!['rondas','circuito','sw','hist'].includes(tab)) tab = 'rondas';
+  const MODE_NAME = {rondas:'Rondas', circuito:'Circuito', tabata:'Tabata'};
   let customPositions = store.get('bjj.positions') || [];
   let belt = store.get('bjj.belt') || null;   // {k:'azul', degrees:2}
   let history = store.get('bjj.history') || [];
@@ -424,16 +482,35 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     const seq = [];
     const push = (type, dur, extra) => { if(dur>0) seq.push(Object.assign({type, dur}, extra)); };
     push('prep', c.prep, {});
-    const cycles = mode==='tabata' ? c.cycles : 1;
+    if(mode==='circuito'){
+      const st = c.stations;
+      for(let v=1; v<=c.rounds; v++){
+        st.forEach((x,i)=>{
+          push('work', x.dur, {round:i+1, cycle:v, theme:x.name});
+          if(i<st.length-1) push('rest', c.rest, {round:i+1, cycle:v});
+        });
+        if(v<c.rounds) push('cycle', c.cycleRest, {round:st.length, cycle:v});
+      }
+      push('relax', c.relax, {});
+      return seq;
+    }
+    const cycles = 1;
     for(let cy=1; cy<=cycles; cy++){
       for(let r=1; r<=c.rounds; r++){
         push('work', c.work, {round:r, cycle:cy});
         if(r<c.rounds) push('rest', c.rest, {round:r, cycle:cy});
       }
-      if(mode==='tabata' && cy<cycles) push('cycle', c.cycleRest, {round:c.rounds, cycle:cy});
     }
     push('relax', c.relax, {});
     return seq;
+  }
+
+  function stationsHTML(c){
+    const rows = c.stations.map((x,i)=>`<button class="row station" type="button" data-station="${i}">
+        <span class="dot num" style="background:var(--work)">${i+1}</span>
+        <span><div class="name">${esc(x.name)}</div><div class="desc">Estação ${i+1} de ${c.stations.length}</div></span>
+        <span class="val">${fmt(x.dur, true)}</span><span class="chev" aria-hidden="true">›</span></button>`).join('');
+    return `<div class="stations-head">Estações</div>${rows}<button class="add-station" type="button" data-station="new" ${c.stations.length>=20?'disabled':''}>+ Adicionar estação</button>`;
   }
 
   /* ---------- Configuração ---------- */
@@ -443,7 +520,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     $('view-timer').hidden = !isTimer;
     $('view-sw').hidden = !isSw;
     $('view-hist').hidden = !isHist;
-    $('mode-title').textContent = isSw ? 'Cronômetro' : isHist ? 'Treinos' : (tab==='tabata' ? 'Tabata' : 'Rondas');
+    $('mode-title').textContent = isSw ? 'Cronômetro' : isHist ? 'Treinos' : MODE_NAME[tab];
     $('btn-cancel').style.visibility = isTimer ? 'visible' : 'hidden';
     $('btn-save').style.visibility = isTimer ? 'visible' : 'hidden';
     if(isHist) renderHistory();
@@ -455,6 +532,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     $('btn-cancel').disabled = !dirty;
 
     $('list').innerHTML = FIELDS[tab].map(f=>{
+      if(f.type==='stations') return stationsHTML(c);
       const desc = typeof f.desc==='function' ? f.desc(c) : f.desc;
       const val = f.type==='time' ? fmt(c[f.k], true) : f.type==='themes' ? (c.themes.length || 'Não') : c[f.k];
       const cls = f.type==='themes' ? ' txt'+(c.themes.length?' on':'') : '';
@@ -465,8 +543,8 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     }).join('');
 
     $('presets').innerHTML = PRESETS[tab].map((p,i)=>{
-      const on = Object.keys(p.v).every(k=>p.v[k]===c[k]);
-      return `<button class="chip${on?' on':''}" type="button" data-p="${i}"><i style="background:${p.color};box-shadow:0 0 0 1px rgba(255,255,255,.25)"></i>${p.label}</button>`;
+      const on = Object.keys(p.v).every(k=>JSON.stringify(p.v[k])===JSON.stringify(c[k]));
+      return `<button class="chip${on?' on':''}" type="button" data-p="${i}"><i style="background:${p.color};box-shadow:0 0 0 1px var(--edge)"></i>${p.label}</button>`;
     }).join('');
 
     const total = buildSequence(tab, c).reduce((a,s)=>a+s.dur,0);
@@ -479,7 +557,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
   });
   $('presets').addEventListener('click', e=>{
     const b = e.target.closest('.chip'); if(!b) return;
-    Object.assign(draft[tab], PRESETS[tab][+b.dataset.p].v); render();
+    draft[tab] = {...draft[tab], ...JSON.parse(JSON.stringify(PRESETS[tab][+b.dataset.p].v))}; render();
   });
   $('btn-save').addEventListener('click', ()=>{
     saved[tab] = {...draft[tab]}; store.set('bjj.'+tab, saved[tab]); render();
@@ -491,6 +569,8 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
   /* ---------- Folha de edição ---------- */
   let editing = null;
   $('list').addEventListener('click', e=>{
+    const st = e.target.closest('[data-station]');
+    if(st){ openStation(st.dataset.station==='new' ? -1 : +st.dataset.station); return; }
     const b = e.target.closest('.row'); if(!b) return;
     editing = FIELDS[tab].find(f=>f.k===b.dataset.k);
     if(editing.type==='themes'){ editing = null; openThemeSheet(); return; }
@@ -498,6 +578,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     $('sheet-name').textContent = editing.name;
     $('sheet-dot').style.background = editing.color;
     const isTime = editing.type==='time';
+    $('fields-name').hidden = true; $('station-actions').hidden = true;
     $('fields-time').hidden = !isTime;
     $('fields-count').hidden = isTime;
     if(isTime){ $('in-min').value = Math.floor(v/60); $('in-sec').value = v%60; }
@@ -506,11 +587,45 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     $('sheet').hidden = false;
     (isTime ? $('in-min') : $('in-count')).focus({preventScroll:true});
   });
+  function openStation(i){
+    const list = draft[tab].stations;
+    const x = i<0 ? {name:'', dur:list.length ? list[list.length-1].dur : 45} : list[i];
+    editing = {type:'station', i, k:'station'};
+    $('sheet-name').textContent = i<0 ? 'Nova estação' : 'Estação '+(i+1);
+    $('sheet-dot').style.background = 'var(--work)';
+    $('fields-name').hidden = false;
+    $('fields-time').hidden = false; $('fields-count').hidden = true;
+    $('in-name').value = x.name;
+    $('in-min').value = Math.floor(x.dur/60); $('in-sec').value = x.dur%60;
+    $('station-actions').hidden = i<0;
+    $('station-actions').querySelector('[data-move="-1"]').disabled = i<=0;
+    $('station-actions').querySelector('[data-move="1"]').disabled = i>=list.length-1;
+    $('station-del').disabled = list.length<=1;
+    $('station-del').classList.remove('confirm'); $('station-del').textContent = 'Remover';
+    $('sheet-hint').textContent = 'Tempo de trabalho nesta estação';
+    $('sheet').hidden = false;
+    $('in-name').focus({preventScroll:true});
+  }
+  function setStations(list){ draft[tab] = {...draft[tab], stations:list}; }
+  $('station-actions').addEventListener('click', e=>{
+    if(!editing || editing.type!=='station') return;
+    const list = [...draft[tab].stations], i = editing.i;
+    const mv = e.target.closest('[data-move]');
+    if(mv){
+      const j = i + +mv.dataset.move; if(j<0 || j>=list.length) return;
+      [list[i], list[j]] = [list[j], list[i]]; setStations(list); closeSheet(); render(); return;
+    }
+    if(e.target.closest('#station-del')){
+      const btn = $('station-del');
+      if(!btn.classList.contains('confirm')){ btn.classList.add('confirm'); btn.textContent = 'Confirmar'; return; }
+      list.splice(i,1); setStations(list); closeSheet(); render();
+    }
+  });
   function closeSheet(){ $('sheet').hidden = true; editing = null; }
   $('sheet-cancel').addEventListener('click', closeSheet);
   $('sheet').addEventListener('click', e=>{ if(e.target===$('sheet')) closeSheet(); });
   document.addEventListener('keydown', e=>{
-    if(!$('sheet').hidden){ if(e.key==='Escape') closeSheet(); if(e.key==='Enter') $('sheet-ok').click(); }
+    if(!$('sheet').hidden){ if(e.key==='Escape') closeSheet(); if(e.key==='Enter'){ e.preventDefault(); $('sheet-ok').click(); } }
     if(e.key==='Escape'){ $('theme-sheet').hidden = true; $('belt-sheet').hidden = true; }
   });
   $('sheet').addEventListener('click', e=>{
@@ -524,6 +639,13 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
   $('sheet-ok').addEventListener('click', ()=>{
     if(!editing) return;
     let v;
+    if(editing.type==='station'){
+      const dur = Math.max(1, Math.min(99, Math.floor(+$('in-min').value||0))*60 + Math.min(59, Math.max(0, Math.floor(+$('in-sec').value||0))));
+      const list = [...draft[tab].stations];
+      const name = $('in-name').value.trim().replace(/\s+/g,' ') || 'Estação '+(editing.i<0 ? list.length+1 : editing.i+1);
+      if(editing.i<0) list.push({name, dur}); else list[editing.i] = {name, dur};
+      setStations(list); closeSheet(); render(); return;
+    }
     if(editing.type==='time'){
       v = Math.min(99, Math.max(0, Math.floor(+$('in-min').value||0)))*60 + Math.min(59, Math.max(0, Math.floor(+$('in-sec').value||0)));
       if(editing.min) v = Math.max(editing.min, v);
@@ -583,9 +705,9 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
   });
   $('theme-sheet').addEventListener('click', e=>{ if(e.target===$('theme-sheet')) $('theme-sheet').hidden = true; });
 
-  // Distribui os temas: Rondas troca a cada ronda, Tabata troca a cada ciclo (as rondas são curtas demais).
+  // Distribui os temas de posição pelas rondas (no Circuito o nome da estação já faz esse papel).
   function assignThemes(mode, c, seq){
-    if(!c.themes.length) return;
+    if(!c.themes || !c.themes.length) return;
     const list = c.themes;
     let bag = [], last = null;
     const draw = i => {
@@ -597,7 +719,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     let n = 0;
     seq.forEach(s=>{
       if(s.type!=='work') return;
-      const key = mode==='tabata' ? s.cycle : s.round;
+      const key = s.round;
       if(!(key in byKey)) byKey[key] = draw(n++);
       s.theme = byKey[key];
     });
@@ -612,9 +734,33 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
   }
   function applyBelt(){
     const root = document.documentElement.style;
-    if(belt && BELTS[belt.k]){ root.setProperty('--accent', BELTS[belt.k].accent); root.setProperty('--accent-ink', BELTS[belt.k].ink); }
-    else { root.removeProperty('--accent'); root.removeProperty('--accent-ink'); }
+    const d = belt && BELTS[belt.k];
+    if(d){
+      const [a, ink] = effectiveTheme()==='light' ? d.light : [d.accent, d.ink];
+      root.setProperty('--accent', a); root.setProperty('--accent-ink', ink);
+    } else { root.removeProperty('--accent'); root.removeProperty('--accent-ink'); }
   }
+
+  /* ---------- Aparência ---------- */
+  let themeMode = store.get('bjj.theme') || 'auto';
+  const mqLight = window.matchMedia ? matchMedia('(prefers-color-scheme: light)') : null;
+  function effectiveTheme(){
+    if(themeMode==='light' || themeMode==='dark') return themeMode;
+    return mqLight && mqLight.matches ? 'light' : 'dark';
+  }
+  function applyTheme(){
+    const t = effectiveTheme();
+    document.documentElement.dataset.theme = t;
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if(meta) meta.content = t==='light' ? '#f2f2ef' : '#1c1d1f';
+    document.querySelectorAll('#theme-mode [data-mode]').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.mode===themeMode)));
+    applyBelt();
+  }
+  if(mqLight){ const onChange = ()=>{ if(themeMode==='auto') applyTheme(); }; mqLight.addEventListener ? mqLight.addEventListener('change', onChange) : mqLight.addListener(onChange); }
+  $('theme-mode').addEventListener('click', e=>{
+    const b = e.target.closest('[data-mode]'); if(!b) return;
+    themeMode = b.dataset.mode; store.set('bjj.theme', themeMode); applyTheme();
+  });
   let beltPick = null;
   function openBeltSheet(){
     beltPick = belt ? {...belt} : {k:'branca', degrees:0};
@@ -693,7 +839,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     run = {mode:tab, c, seq, i:0, paused:false, remaining:seq[0].dur, endAt:0, lastTick:null, finished:false,
       startedAt:Date.now(), lastNow:performance.now(), active:0, work:0, rounds:0, done:[], saved:false};
     run.endAt = performance.now() + run.remaining*1000;
-    $('run-mode').textContent = tab==='tabata' ? 'Tabata' : 'Rondas';
+    $('run-mode').textContent = MODE_NAME[tab];
     $('run-belt').innerHTML = beltHTML(belt, true);
     $('run').hidden = false;
     lockScreen();
@@ -706,7 +852,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     el.style.setProperty('--phase', p.color);
     el.classList.toggle('light-text', p.text==='light');
     el.classList.toggle('dark-text', p.text!=='light');
-    $('run-phase').textContent = p.name;
+    $('run-phase').textContent = run.mode==='circuito' && s.type==='cycle' ? 'Descanso entre voltas' : p.name;
     const th = s.type==='work' ? s.theme : (run.seq[run.i+1] && run.seq[run.i+1].theme);
     $('run-theme').hidden = !th;
     $('run-theme').classList.toggle('next', s.type!=='work');
@@ -720,8 +866,10 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     const parts = [];
     if(s.round){
       const r = run.c.rounds;
-      parts.push(`<div>Ronda<b>${s.round}/${r}</b></div>`);
-      if(run.mode==='tabata') parts.push(`<div>Ciclo<b>${s.cycle}/${run.c.cycles}</b></div>`);
+      if(run.mode==='circuito'){
+        parts.push(`<div>Estação<b>${s.round}/${run.c.stations.length}</b></div>`);
+        parts.push(`<div>Volta<b>${s.cycle}/${run.c.rounds}</b></div>`);
+      } else parts.push(`<div>Ronda<b>${s.round}/${r}</b></div>`);
     }
     $('run-counters').innerHTML = parts.join('');
     const nx = run.seq[run.i+1];
@@ -928,10 +1076,11 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     $('sessions').innerHTML = list.length ? list.map(({h, idx})=>{
       const t = new Date(h.t);
       const when = WD[t.getDay()]+', '+t.getDate()+' '+MONTHS[t.getMonth()].slice(0,3).toLowerCase()+' · '+String(t.getHours()).padStart(2,'0')+':'+String(t.getMinutes()).padStart(2,'0');
-      const what = (h.mode==='tabata'?'Tabata':'Rondas')+' · '+h.rounds+(h.rounds==1?' ronda':' rondas')+' · '+Math.max(1,Math.round(h.work/60))+' min'+(h.done?'':' · parcial');
+      const unit = h.mode==='circuito' ? (h.rounds==1?' estação':' estações') : (h.rounds==1?' ronda':' rondas');
+      const what = (MODE_NAME[h.mode]||'Rondas')+' · '+h.rounds+unit+' · '+Math.max(1,Math.round(h.work/60))+' min'+(h.done?'':' · parcial');
       const conf = pendingDelete===h.t;
       return `<div class="sess"><span class="sess-when">${when}</span><span class="sess-what">${what}</span>${h.themes && h.themes.length ? `<span class="sess-themes">${h.themes.map(esc).join(', ')}</span>` : ''}<button type="button" class="sess-del${conf?' confirm':''}" data-del="${h.t}" aria-label="Apagar treino">${conf?'Apagar?':'✕'}</button></div>`;
-    }).join('') : '<div class="empty">Nenhum treino neste mês. Termine uma sessão de Rondas ou Tabata e ela aparece aqui.</div>';
+    }).join('') : '<div class="empty">Nenhum treino neste mês. Termine uma sessão de Rondas ou Circuito e ela aparece aqui.</div>';
   }
   $('m-prev').addEventListener('click', ()=>{ viewMonth = viewMonth.m ? {y:viewMonth.y, m:viewMonth.m-1} : {y:viewMonth.y-1, m:11}; pendingDelete = null; renderHistory(); });
   $('m-next').addEventListener('click', ()=>{ viewMonth = viewMonth.m<11 ? {y:viewMonth.y, m:viewMonth.m+1} : {y:viewMonth.y+1, m:0}; pendingDelete = null; renderHistory(); });
@@ -943,7 +1092,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     renderHistory();
   });
 
-  applyBelt();
+  applyTheme();
   render(); swDraw();
 })();
 </script>
