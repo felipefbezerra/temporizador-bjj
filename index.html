@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#1c1d1f">
-<meta name="description" content="Temporizador de rondas, circuito e cronômetro para treinos e lutas de jiu-jitsu.">
+<meta name="description" content="Temporizador de combate, circuito e cronômetro para treinos e lutas de jiu-jitsu.">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -185,6 +185,15 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .seg button[aria-pressed="true"]{background:var(--band);color:var(--fg)}
 .seg.three{grid-template-columns:repeat(3,1fr);background:var(--panel)}
 .appearance{display:flex;flex-direction:column;gap:8px}
+.seg.two{grid-template-columns:1fr 1fr}
+.note{margin:0;color:var(--muted);font-size:.9rem;line-height:1.35}
+.note:empty{display:none}
+.run-actions{display:flex;gap:8px}
+.run-head{gap:10px}
+.run-head .icon-btn{padding:4px 10px;display:flex;align-items:center}
+.run-head .icon-btn svg{width:22px;height:22px}
+.run-head .icon-btn[aria-pressed="true"]{background:currentColor}
+.run-head .icon-btn[aria-pressed="true"] svg{stroke:var(--phase);color:var(--phase)}
 [data-theme="light"] .seg.three button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
 .theme-name{font-size:clamp(1.6rem,7vw,3rem);font-weight:600;text-transform:uppercase;line-height:1.05;margin-top:.3em;padding:.12em .5em;border:3px solid currentColor;border-radius:10px;max-width:100%;text-wrap:balance}
 .theme-name.next{font-size:clamp(1.1rem,4.5vw,1.7rem);border-width:2px;font-weight:500}
@@ -196,6 +205,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .belt.sm{height:14px;width:96px;border-radius:3px}
 .run .belt.sm{box-shadow:0 0 0 2px rgba(0,0,0,.25)}
 .belt-swatches{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.belt-group{grid-column:1/-1;color:var(--muted);text-transform:uppercase;font-size:.8rem;letter-spacing:.06em;padding-top:4px}
 .belt-swatches button{display:flex;flex-direction:column;gap:6px;align-items:center;padding:8px 4px;border-radius:12px;border:2px solid transparent;text-transform:uppercase;font-size:.8rem;letter-spacing:.04em}
 .belt-swatches button[aria-pressed="true"]{border-color:var(--accent)}
 .belt-swatches .sw-color{width:100%;height:26px;border-radius:4px;box-shadow:inset 0 0 0 1px var(--edge)}
@@ -238,7 +248,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 <div class="app">
   <header class="top">
     <button class="cancel" id="btn-cancel" type="button">Cancelar</button>
-    <div id="mode-title">Rondas</div>
+    <div id="mode-title">Combate</div>
     <button class="save" id="btn-save" type="button">Guardar</button>
   </header>
 
@@ -273,6 +283,13 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
       <div class="appearance"><h3 class="section-title">Aparência</h3>
         <div class="seg three" id="theme-mode" role="group" aria-label="Aparência"><button type="button" data-mode="auto">Automático</button><button type="button" data-mode="light">Claro</button><button type="button" data-mode="dark">Escuro</button></div>
       </div>
+      <div class="appearance"><h3 class="section-title">Som durante o treino</h3>
+        <div class="seg three" id="sound-mode" role="group" aria-label="Som"><button type="button" data-sound="voice">Voz</button><button type="button" data-sound="beep">Só bipes</button><button type="button" data-sound="mute">Mudo</button></div>
+      </div>
+      <div class="appearance"><h3 class="section-title">Avisos com o app em segundo plano</h3>
+        <div class="seg three two" id="notify-mode" role="group" aria-label="Avisos em segundo plano"><button type="button" data-notify="off">Desligados</button><button type="button" data-notify="on">Ligados</button></div>
+        <p class="note" id="notify-note"></p>
+      </div>
       <div class="month-nav"><button type="button" id="m-prev" aria-label="Mês anterior">‹</button><span id="m-label">Outubro 2026</span><button type="button" id="m-next" aria-label="Próximo mês">›</button></div>
       <div class="stats">
         <div class="stat"><b id="st-count">0</b><span>Treinos</span></div>
@@ -290,7 +307,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     <button class="tab" role="tab" data-tab="circuito" type="button">
       <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="16" cy="6" r="3"/><circle cx="26" cy="20" r="3"/><circle cx="6" cy="20" r="3"/><path d="M19 7.5l5 9M23.5 22.5H8.5M7.5 17l5.5-9.5"/></svg>Circuito</button>
     <button class="tab" role="tab" data-tab="rondas" type="button">
-      <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="16" cy="16" r="12"/><path d="M16 16l-6-6"/></svg>Rondas</button>
+      <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="16" cy="16" r="12"/><path d="M16 16l-6-6"/></svg>Combate</button>
     <button class="tab" role="tab" data-tab="sw" type="button">
       <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="16" cy="16" r="12"/><circle cx="16" cy="16" r="1.6" fill="currentColor"/></svg>Cronômetro</button>
     <button class="tab" role="tab" data-tab="hist" type="button">
@@ -339,7 +356,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 </div>
 
 <section class="run" id="run" hidden>
-  <div class="run-head"><span id="run-mode">Rondas</span><span id="run-belt"></span><button type="button" id="run-stop">Encerrar</button></div>
+  <div class="run-head"><span id="run-mode">Combate</span><span id="run-belt"></span><div class="run-actions"><button type="button" id="run-pip" class="icon-btn" hidden aria-label="Abrir em janela flutuante" aria-pressed="false" title="Janela flutuante"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2"/><rect x="12" y="11" width="7" height="6" rx="1" fill="currentColor" stroke="none"/></svg></button><button type="button" id="run-stop">Encerrar</button></div></div>
   <div class="run-main" id="run-main" title="Toque para pausar">
     <div class="phase-name" id="run-phase">Preparar</div>
     <div class="clock" id="run-clock">0:30</div>
@@ -386,7 +403,12 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     azul:   {name:'Azul',   color:'#1f5fd1', tip:'#111111', accent:'#5a95f7', ink:'#0b1630', light:['#1f5fd1','#ffffff'], max:4},
     roxa:   {name:'Roxa',   color:'#6a2fb0', tip:'#111111', accent:'#b07cf4', ink:'#1d0b33', light:['#6a2fb0','#ffffff'], max:4},
     marrom: {name:'Marrom', color:'#6b3f1d', tip:'#111111', accent:'#c9925c', ink:'#24140a', light:['#7a4a24','#ffffff'], max:4},
-    preta:  {name:'Preta',  color:'#121212', tip:'#d22b1f', accent:'#ef4a3d', ink:'#ffffff', light:['#c62a1e','#ffffff'], max:6}
+    preta:  {name:'Preta',  color:'#121212', tip:'#d22b1f', accent:'#ef4a3d', ink:'#ffffff', light:['#c62a1e','#ffffff'], max:6},
+    // Faixas infantis (até 15 anos)
+    cinza:   {name:'Cinza',   kids:true, color:'#8b8e94', tip:'#111111', accent:'#b3b7be', ink:'#16171a', light:['#5c5f65','#ffffff'], max:4},
+    amarela: {name:'Amarela', kids:true, color:'#f2c81f', tip:'#111111', accent:'#f2c81f', ink:'#1c1d1f', light:['#8f7000','#ffffff'], max:4},
+    laranja: {name:'Laranja', kids:true, color:'#f07a1a', tip:'#111111', accent:'#ff9440', ink:'#1c1d1f', light:['#bf5508','#ffffff'], max:4},
+    verde:   {name:'Verde',   kids:true, color:'#2e9b3e', tip:'#111111', accent:'#55c665', ink:'#0b1f0e', light:['#237a30','#ffffff'], max:4}
   };
 
   // Predefinições de BJJ. Tempos de luta seguem a tabela IBJJF para adultos.
@@ -452,7 +474,13 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
   let tab = store.get('bjj.tab') || 'rondas';
   if(tab==='tabata') tab = 'circuito';
   if(!['rondas','circuito','sw','hist'].includes(tab)) tab = 'rondas';
-  const MODE_NAME = {rondas:'Rondas', circuito:'Circuito', tabata:'Tabata'};
+  const MODE_NAME = {rondas:'Combate', circuito:'Circuito', tabata:'Tabata'};
+  // Nome da fase na tela e na voz: no Combate o trabalho é a luta.
+  function phaseName(mode, s){
+    if(s.type==='work' && mode==='rondas') return 'Luta';
+    if(s.type==='cycle' && mode==='circuito') return 'Descanso entre voltas';
+    return PHASE[s.type].name;
+  }
   let customPositions = store.get('bjj.positions') || [];
   let belt = store.get('bjj.belt') || null;   // {k:'azul', degrees:2}
   let history = store.get('bjj.history') || [];
@@ -767,8 +795,10 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     renderBeltSheet(); $('belt-sheet').hidden = false;
   }
   function renderBeltSheet(){
-    $('belt-swatches').innerHTML = Object.entries(BELTS).map(([k,d])=>
-      `<button type="button" data-belt="${k}" aria-pressed="${k===beltPick.k}"><span class="sw-color" style="background:${d.color}"></span>${d.name}</button>`).join('');
+    const sw = ([k,d]) => `<button type="button" data-belt="${k}" aria-pressed="${k===beltPick.k}"><span class="sw-color" style="background:${d.color}"></span>${d.name}</button>`;
+    const all = Object.entries(BELTS);
+    $('belt-swatches').innerHTML = '<div class="belt-group">Adulto</div>' + all.filter(([,d])=>!d.kids).map(sw).join('')
+      + '<div class="belt-group">Infantil</div>' + all.filter(([,d])=>d.kids).map(sw).join('');
     beltPick.degrees = Math.min(BELTS[beltPick.k].max, beltPick.degrees);
     $('in-degrees').max = BELTS[beltPick.k].max;
     $('in-degrees').value = beltPick.degrees;
@@ -801,7 +831,9 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     if(ac && ac.state==='suspended') ac.resume();
     return ac;
   }
+  let soundMode = store.get('bjj.sound') || 'voice';   // voice | beep | mute
   function beep(freq, dur, count, gap){
+    if(soundMode==='mute') return;
     const a = audio(); if(!a) return;
     for(let i=0;i<(count||1);i++){
       const t = a.currentTime + i*((dur||.15)+(gap||.12));
@@ -821,14 +853,216 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     done: ()=>beep(1040, .3, 4, .12)
   };
 
+  // Voz: usa o leitor de texto do próprio aparelho (Web Speech API), com a voz em português instalada.
+  const tts = 'speechSynthesis' in window ? window.speechSynthesis : null;
+  let ptVoice = null;
+  function pickVoice(){
+    if(!tts) return;
+    const vs = tts.getVoices();
+    ptVoice = vs.find(v=>/^pt[-_]BR/i.test(v.lang)) || vs.find(v=>/^pt/i.test(v.lang)) || null;
+  }
+  if(tts){ pickVoice(); tts.addEventListener ? tts.addEventListener('voiceschanged', pickVoice) : (tts.onvoiceschanged = pickVoice); }
+  function say(text){
+    if(soundMode!=='voice' || !tts || !text) return;
+    try{
+      tts.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'pt-BR'; if(ptVoice) u.voice = ptVoice; u.rate = 1.05;
+      tts.speak(u);
+    }catch(e){}
+  }
+  function phaseSpeech(r){
+    const s = r.seq[r.i], nx = r.seq[r.i+1];
+    if(s.type==='prep') return 'Preparar';
+    if(s.type==='work'){
+      const last = r.mode==='rondas' && r.c.rounds>1 && s.round===r.c.rounds;
+      const lastLap = r.mode==='circuito' && r.c.rounds>1 && s.cycle===r.c.rounds && s.round===1;
+      return [last ? 'Última ronda' : lastLap ? 'Última volta' : '', s.theme || '', r.mode==='rondas' ? 'Combate!' : 'Valendo!'].filter(Boolean).join('. ');
+    }
+    if(s.type==='rest' || s.type==='cycle'){
+      const base = s.type==='cycle' ? 'Tempo! '+phaseName(r.mode, s) : 'Tempo! Descanso';
+      return nx && nx.theme ? base+'. Próxima: '+nx.theme : base;
+    }
+    if(s.type==='relax') return 'Tempo! Relaxe';
+    return '';
+  }
+  document.getElementById('sound-mode').addEventListener('click', e=>{
+    const b = e.target.closest('[data-sound]'); if(!b) return;
+    soundMode = b.dataset.sound; store.set('bjj.sound', soundMode); renderSettings();
+    if(soundMode==='voice'){ if(!tts) return; say('Voz ativada. Oss!'); } else if(tts) tts.cancel();
+    if(soundMode==='beep'){ audio(); SOUND.tick(); }
+  });
+
+  /* ---------- Avisos em segundo plano ---------- */
+  let notifyMode = store.get('bjj.notify') || 'off';
+  const canNotify = 'Notification' in window;
+  function renderSettings(){
+    document.querySelectorAll('#sound-mode [data-sound]').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.sound===soundMode)));
+    document.querySelectorAll('#notify-mode [data-notify]').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.notify===notifyMode)));
+    let note = '';
+    if(soundMode==='voice' && !tts) note = 'Este navegador não tem leitor de voz. O app vai usar só os bipes.';
+    $('notify-note').textContent = !canNotify ? 'Este navegador não mostra avisos. No iPhone eles só funcionam com o app instalado na tela de início.'
+      : notifyMode==='on' && Notification.permission==='denied' ? 'Os avisos estão bloqueados nas configurações do navegador para este site.'
+      : notifyMode==='on' ? 'Quando você sair do app durante o treino, cada troca de fase aparece como aviso.' : note;
+  }
+  document.getElementById('notify-mode').addEventListener('click', async e=>{
+    const b = e.target.closest('[data-notify]'); if(!b) return;
+    notifyMode = b.dataset.notify;
+    if(notifyMode==='on' && canNotify && Notification.permission==='default'){
+      try{ await Notification.requestPermission(); }catch(err){}
+    }
+    store.set('bjj.notify', notifyMode); renderSettings();
+  });
+  function notifyPhase(r){
+    if(notifyMode!=='on' || !canNotify || Notification.permission!=='granted' || document.visibilityState==='visible') return;
+    const s = r.seq[r.i];
+    const title = (s.theme && s.type==='work' ? s.theme : phaseName(r.mode, s))+' · '+fmtClock(s.dur);
+    const nx = r.seq[r.i+1];
+    const opts = {body: nx ? 'A seguir: '+(nx.theme || phaseName(r.mode, nx)) : 'Último intervalo', tag:'bjj-timer', renotify:true, icon:'icons/icon-192.png', badge:'icons/icon-192.png'};
+    if(navigator.serviceWorker && navigator.serviceWorker.controller){
+      navigator.serviceWorker.ready.then(reg=>reg.showNotification(title, opts)).catch(()=>{});
+    } else { try{ new Notification(title, opts); }catch(err){} }
+  }
+
+  /* ---------- Segundo plano: áudio silencioso + controles na tela de bloqueio ---------- */
+  // Um áudio mudo em loop mantém o navegador tratando o treino como mídia tocando,
+  // o que evita que o celular congele o timer e mostra os controles na tela de bloqueio.
+  let keepAlive = null;
+  function silentWav(){
+    const rate = 8000, n = rate, buf = new ArrayBuffer(44+n), v = new DataView(buf);
+    const str = (o,t)=>{ for(let i=0;i<t.length;i++) v.setUint8(o+i, t.charCodeAt(i)); };
+    str(0,'RIFF'); v.setUint32(4,36+n,true); str(8,'WAVE'); str(12,'fmt '); v.setUint32(16,16,true);
+    v.setUint16(20,1,true); v.setUint16(22,1,true); v.setUint32(24,rate,true); v.setUint32(28,rate,true);
+    v.setUint16(32,1,true); v.setUint16(34,8,true); str(36,'data'); v.setUint32(40,n,true);
+    for(let i=0;i<n;i++) v.setUint8(44+i,128);
+    return URL.createObjectURL(new Blob([buf], {type:'audio/wav'}));
+  }
+  function startKeepAlive(){
+    try{
+      if(!keepAlive){ keepAlive = new Audio(silentWav()); keepAlive.loop = true; keepAlive.setAttribute('playsinline',''); }
+      const pr = keepAlive.play(); if(pr && pr.catch) pr.catch(()=>{});
+    }catch(e){}
+    if('mediaSession' in navigator){
+      const ms = navigator.mediaSession;
+      const set = (a,f)=>{ try{ ms.setActionHandler(a,f); }catch(e){} };
+      set('play', ()=>{ if(run && run.paused) togglePause(); });
+      set('pause', ()=>{ if(run && !run.paused && !run.finished) togglePause(); });
+      set('nexttrack', ()=>jump(1));
+      set('previoustrack', ()=>jump(-1));
+    }
+  }
+  function stopKeepAlive(){
+    try{ keepAlive && keepAlive.pause(); }catch(e){}
+    if('mediaSession' in navigator){ try{ navigator.mediaSession.metadata = null; navigator.mediaSession.playbackState = 'none'; }catch(e){} }
+  }
+  let lastMeta = '';
+  function updateMediaSession(){
+    if(!('mediaSession' in navigator) || !run || typeof MediaMetadata==='undefined') return;
+    const s = run.seq[run.i];
+    const title = run.finished ? 'Treino concluído' : (s.type==='work' && s.theme ? s.theme : phaseName(run.mode, s))+' · '+fmtClock(run.remaining);
+    if(title===lastMeta) return;
+    lastMeta = title;
+    const sub = s.round ? (run.mode==='circuito' ? 'Estação '+s.round+'/'+run.c.stations.length+' · Volta '+s.cycle+'/'+run.c.rounds : 'Ronda '+s.round+'/'+run.c.rounds) : MODE_NAME[run.mode];
+    try{
+      navigator.mediaSession.metadata = new MediaMetadata({title, artist:sub, album:'Temporizador BJJ',
+        artwork:[{src:'icons/icon-192.png', sizes:'192x192', type:'image/png'}, {src:'icons/icon-512.png', sizes:'512x512', type:'image/png'}]});
+      navigator.mediaSession.playbackState = run.paused || run.finished ? 'paused' : 'playing';
+    }catch(e){}
+  }
+
+  /* ---------- Janela flutuante (picture-in-picture) ---------- */
+  // Computador (Chrome/Edge): Document Picture-in-Picture. Celular: um vídeo gerado de um canvas.
+  let pip = null;
+  const hasDocPip = 'documentPictureInPicture' in window;
+  const hasVideoPip = !!(document.pictureInPictureEnabled && HTMLCanvasElement.prototype.captureStream);
+  $('run-pip').hidden = !(hasDocPip || hasVideoPip);
+  function pipColors(){
+    const el = $('run');
+    return {bg:getComputedStyle(el).backgroundColor, fg:el.classList.contains('light-text') ? '#ffffff' : '#121212'};
+  }
+  function pipText(){
+    const s = run.seq[run.i];
+    const top = run.finished ? 'Treino concluído' : (s.type==='work' && s.theme ? s.theme : phaseName(run.mode, s));
+    const bottom = run.paused ? 'Pausado' : s.round ? (run.mode==='circuito' ? 'Estação '+s.round+'/'+run.c.stations.length+' · Volta '+s.cycle+'/'+run.c.rounds : 'Ronda '+s.round+'/'+run.c.rounds) : MODE_NAME[run.mode];
+    return {top, clock:fmtClock(run.finished ? 0 : run.remaining), bottom};
+  }
+  async function openPip(){
+    if(!run) return;
+    if(pip){ closePip(); return; }
+    try{
+      if(hasDocPip){
+        const win = await documentPictureInPicture.requestWindow({width:320, height:220});
+        const d = win.document;
+        d.head.innerHTML = '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&display=swap"><style>html,body{margin:0;height:100%}body{display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Oswald,"Arial Narrow",sans-serif;text-transform:uppercase;text-align:center;cursor:pointer;user-select:none;transition:background-color .25s}#t{font-size:8vw;font-weight:600;line-height:1.1;padding:0 6px}#c{font-size:34vw;font-weight:600;line-height:.95;font-variant-numeric:tabular-nums}#b{font-size:7vw;letter-spacing:.04em}</style>';
+        d.body.innerHTML = '<div id="t"></div><div id="c"></div><div id="b"></div>';
+        d.body.addEventListener('click', togglePause);
+        win.addEventListener('pagehide', ()=>{ pip = null; renderPipBtn(); });
+        pip = {type:'doc', win};
+      } else {
+        const canvas = document.createElement('canvas'); canvas.width = 480; canvas.height = 270;
+        const video = document.createElement('video');
+        video.muted = true; video.playsInline = true; video.setAttribute('playsinline','');
+        video.style.cssText = 'position:fixed;left:0;bottom:0;width:2px;height:2px;opacity:0;pointer-events:none';
+        document.body.appendChild(video);
+        pip = {type:'video', canvas, ctx:canvas.getContext('2d'), video};
+        drawPip();
+        video.srcObject = canvas.captureStream();
+        await video.play();
+        video.addEventListener('leavepictureinpicture', ()=>{ video.remove(); pip = null; renderPipBtn(); });
+        await video.requestPictureInPicture();
+      }
+    }catch(e){
+      if(pip && pip.video) pip.video.remove();
+      pip = null;
+    }
+    renderPipBtn(); drawPip();
+  }
+  function closePip(){
+    if(!pip) return;
+    try{
+      if(pip.type==='doc') pip.win.close();
+      else if(document.pictureInPictureElement) document.exitPictureInPicture();
+    }catch(e){}
+    if(pip && pip.video) pip.video.remove();
+    pip = null; renderPipBtn();
+  }
+  function renderPipBtn(){
+    $('run-pip').setAttribute('aria-pressed', String(!!pip));
+    $('run-pip').setAttribute('aria-label', pip ? 'Fechar janela flutuante' : 'Abrir em janela flutuante');
+  }
+  function drawPip(){
+    if(!pip || !run) return;
+    const {bg, fg} = pipColors(), t = pipText();
+    if(pip.type==='doc'){
+      const d = pip.win.document;
+      d.body.style.background = bg; d.body.style.color = fg;
+      d.getElementById('t').textContent = t.top; d.getElementById('c').textContent = t.clock; d.getElementById('b').textContent = t.bottom;
+      return;
+    }
+    const {ctx, canvas} = pip, W = canvas.width, H = canvas.height;
+    ctx.fillStyle = bg; ctx.fillRect(0,0,W,H);
+    ctx.fillStyle = fg; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    const fit = (text, size, weight, y, maxW) => {
+      let sz = size;
+      do{ ctx.font = weight+' '+sz+'px Oswald, "Arial Narrow", sans-serif'; sz -= 2; } while(ctx.measureText(text).width > maxW && sz > 10);
+      ctx.fillText(text, W/2, y);
+    };
+    fit(t.top.toUpperCase(), 40, 600, 40, W-30);
+    fit(t.clock, 150, 600, 145, W-30);
+    fit(t.bottom.toUpperCase(), 30, 500, 240, W-30);
+  }
+  $('run-pip').addEventListener('click', openPip);
+
   /* ---------- Execução ---------- */
-  let run = null, raf = 0, wakeLock = null;
+  let run = null, timer = 0, wakeLock = null;
 
   async function lockScreen(){
     try{ if('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen'); }catch(e){}
   }
   function unlockScreen(){ try{ wakeLock && wakeLock.release(); }catch(e){} wakeLock = null; }
-  document.addEventListener('visibilitychange', ()=>{ if(run && !run.paused && document.visibilityState==='visible') lockScreen(); });
+  document.addEventListener('visibilitychange', ()=>{
+    if(run && document.visibilityState==='visible'){ if(!run.paused && !run.finished) lockScreen(); step(); }
+  });
 
   function startRun(){
     const c = {...draft[tab]};
@@ -843,23 +1077,27 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     $('run-belt').innerHTML = beltHTML(belt, true);
     $('run').hidden = false;
     lockScreen();
-    enterPhase(false);
+    startKeepAlive();
+    enterPhase(false, true);
     loop();
   }
-  function enterPhase(sound){
+  function enterPhase(sound, announce){
     const s = run.seq[run.i], p = PHASE[s.type];
     const el = $('run');
     el.style.setProperty('--phase', p.color);
     el.classList.toggle('light-text', p.text==='light');
     el.classList.toggle('dark-text', p.text!=='light');
-    $('run-phase').textContent = run.mode==='circuito' && s.type==='cycle' ? 'Descanso entre voltas' : p.name;
+    $('run-phase').textContent = phaseName(run.mode, s);
     const th = s.type==='work' ? s.theme : (run.seq[run.i+1] && run.seq[run.i+1].theme);
     $('run-theme').hidden = !th;
     $('run-theme').classList.toggle('next', s.type!=='work');
     $('run-theme').textContent = th ? (s.type==='work' ? th : 'Próximo: '+th) : '';
-    run.lastTick = null;
+    run.lastTick = null; run.w30 = false; run.w10 = false;
     if(sound){ (s.type==='work' ? SOUND.work : s.type==='rest' || s.type==='cycle' ? SOUND.rest : SOUND.other)(); }
+    if(sound || announce) say(phaseSpeech(run));
+    if(sound) notifyPhase(run);
     renderCounters();
+    drawPip();
   }
   function renderCounters(){
     const s = run.seq[run.i];
@@ -873,23 +1111,29 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     }
     $('run-counters').innerHTML = parts.join('');
     const nx = run.seq[run.i+1];
-    $('run-next').textContent = nx ? 'A seguir: '+(nx.theme || PHASE[nx.type].name)+' '+fmtClock(nx.dur) : 'Último intervalo';
+    $('run-next').textContent = nx ? 'A seguir: '+(nx.theme || phaseName(run.mode, nx))+' '+fmtClock(nx.dur) : 'Último intervalo';
   }
+  // O relógio roda num intervalo (e não em requestAnimationFrame) para continuar com o app em segundo plano.
   function loop(){
-    cancelAnimationFrame(raf);
-    const step = ()=>{
+    clearInterval(timer);
+    timer = setInterval(step, 200);
+    step();
+  }
+  function step(){
       if(!run) return;
       const now = performance.now();
       if(!run.paused && !run.finished){
-        const dt = Math.min(1, (now - run.lastNow)/1000);
+        const dt = Math.min(600, (now - run.lastNow)/1000);
         run.active += dt;
         if(run.seq[run.i].type==='work') run.work += dt;
       }
       run.lastNow = now;
       if(!run.paused && !run.finished){
         run.remaining = (run.endAt - now)/1000;
-        const whole = Math.ceil(run.remaining);
-        if(whole<=3 && whole>=1 && run.lastTick!==whole && run.seq[run.i].dur>3){ run.lastTick = whole; SOUND.tick(); }
+        const whole = Math.ceil(run.remaining), cur = run.seq[run.i];
+        if(whole<=3 && whole>=1 && run.lastTick!==whole && cur.dur>3){ run.lastTick = whole; SOUND.tick(); }
+        if(cur.type==='work' && !run.w30 && run.remaining<=30 && run.remaining>3){ run.w30 = true; if(cur.dur>=60 && run.remaining>28) say('Trinta segundos'); }
+        if(cur.type==='work' && !run.w10 && run.remaining<=10 && run.remaining>3){ run.w10 = true; if(cur.dur>=25 && run.remaining>8) say('Dez segundos'); }
         if(run.remaining<=0){
           countRound(true);
           if(run.i < run.seq.length-1){
@@ -897,16 +1141,15 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
             run.i++;
             run.remaining = run.seq[run.i].dur - over;
             run.endAt = now + run.remaining*1000;
-            enterPhase(true);
+            enterPhase(over < 2);   // se o celular congelou o app por muito tempo, alcança sem disparar som a cada fase
           } else {
             finish();
           }
         }
       }
       draw();
-      raf = requestAnimationFrame(step);
-    };
-    raf = requestAnimationFrame(step);
+      updateMediaSession();
+      drawPip();
   }
   function draw(){
     const s = run.seq[run.i];
@@ -939,6 +1182,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
   function finish(){
     run.finished = true; run.remaining = 0;
     SOUND.done();
+    say('Treino concluído. Oss!');
     const ok = saveRun();
     $('run-phase').textContent = 'Treino concluído';
     $('run-theme').hidden = true;
@@ -946,13 +1190,15 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     $('run').style.setProperty('--phase', 'var(--work)');
     $('run').classList.remove('light-text'); $('run').classList.add('dark-text');
     unlockScreen();
+    drawPip(); updateMediaSession();
   }
   function togglePause(){
     if(!run) return;
     audio();
     if(run.finished){ stopRun(); startRun(); return; }
     run.paused = !run.paused;
-    if(!run.paused){ run.endAt = performance.now() + run.remaining*1000; lockScreen(); }
+    if(!run.paused){ run.endAt = performance.now() + run.remaining*1000; lockScreen(); startKeepAlive(); }
+    lastMeta = ''; updateMediaSession(); drawPip();
   }
   function jump(dir){
     if(!run || run.finished) return;
@@ -972,7 +1218,9 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
   }
   function stopRun(){
     if(run && !run.finished) saveRun();
-    cancelAnimationFrame(raf); run = null; $('run').hidden = true; unlockScreen();
+    closePip();
+    clearInterval(timer); run = null; $('run').hidden = true; unlockScreen(); stopKeepAlive(); lastMeta = '';
+    if(tts) tts.cancel();
     if(tab==='hist') render();
   }
 
@@ -1077,10 +1325,10 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
       const t = new Date(h.t);
       const when = WD[t.getDay()]+', '+t.getDate()+' '+MONTHS[t.getMonth()].slice(0,3).toLowerCase()+' · '+String(t.getHours()).padStart(2,'0')+':'+String(t.getMinutes()).padStart(2,'0');
       const unit = h.mode==='circuito' ? (h.rounds==1?' estação':' estações') : (h.rounds==1?' ronda':' rondas');
-      const what = (MODE_NAME[h.mode]||'Rondas')+' · '+h.rounds+unit+' · '+Math.max(1,Math.round(h.work/60))+' min'+(h.done?'':' · parcial');
+      const what = (MODE_NAME[h.mode]||'Combate')+' · '+h.rounds+unit+' · '+Math.max(1,Math.round(h.work/60))+' min'+(h.done?'':' · parcial');
       const conf = pendingDelete===h.t;
       return `<div class="sess"><span class="sess-when">${when}</span><span class="sess-what">${what}</span>${h.themes && h.themes.length ? `<span class="sess-themes">${h.themes.map(esc).join(', ')}</span>` : ''}<button type="button" class="sess-del${conf?' confirm':''}" data-del="${h.t}" aria-label="Apagar treino">${conf?'Apagar?':'✕'}</button></div>`;
-    }).join('') : '<div class="empty">Nenhum treino neste mês. Termine uma sessão de Rondas ou Circuito e ela aparece aqui.</div>';
+    }).join('') : '<div class="empty">Nenhum treino neste mês. Termine uma sessão de Combate ou Circuito e ela aparece aqui.</div>';
   }
   $('m-prev').addEventListener('click', ()=>{ viewMonth = viewMonth.m ? {y:viewMonth.y, m:viewMonth.m-1} : {y:viewMonth.y-1, m:11}; pendingDelete = null; renderHistory(); });
   $('m-next').addEventListener('click', ()=>{ viewMonth = viewMonth.m<11 ? {y:viewMonth.y, m:viewMonth.m+1} : {y:viewMonth.y+1, m:0}; pendingDelete = null; renderHistory(); });
@@ -1093,6 +1341,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
   });
 
   applyTheme();
+  renderSettings();
   render(); swDraw();
 })();
 </script>

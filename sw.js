@@ -1,5 +1,5 @@
 // Mude a versão sempre que atualizar os arquivos, para os aparelhos baixarem a nova versão.
-const CACHE = 'bjj-timer-v3';
+const CACHE = 'bjj-timer-v4';
 const ASSETS = ['./', './index.html', './manifest.webmanifest',
   './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png', './icons/apple-touch-icon.png'];
 
@@ -24,4 +24,13 @@ self.addEventListener('fetch', e => {
     }
     return res;
   }).catch(() => caches.match('./index.html'))));
+});
+
+// Toque no aviso de troca de fase: volta para o app.
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  e.waitUntil(self.clients.matchAll({type: 'window', includeUncontrolled: true}).then(list => {
+    for (const c of list) if ('focus' in c) return c.focus();
+    return self.clients.openWindow('./');
+  }));
 });
