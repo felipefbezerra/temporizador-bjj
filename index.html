@@ -104,7 +104,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 
 /* Folha de edição */
 .sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;justify-content:center;z-index:20}
-.sheet{width:100%;max-width:560px;background:var(--panel);border-radius:20px 20px 0 0;padding:20px max(16px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:18px}
+.sheet{width:100%;max-width:560px;background:var(--panel);border-radius:20px 20px 0 0;padding:20px max(16px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:18px;max-height:100%;overflow-y:auto;overscroll-behavior:contain}
 .sheet h2{margin:0;font-size:1.5rem;font-weight:500;text-transform:uppercase;display:flex;align-items:center;gap:10px}
 .sheet h2 .dot{margin:0;width:16px;height:16px;align-self:center}
 .fields{display:flex;justify-content:center;gap:18px;align-items:flex-end}
@@ -140,8 +140,8 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .run-head{display:flex;justify-content:space-between;align-items:center;padding-top:14px;text-transform:uppercase;font-size:1.05rem;letter-spacing:.05em;font-weight:500}
 .run-head button{border:2px solid currentColor;border-radius:999px;padding:4px 14px;font-size:.95rem}
 .run-main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:0;cursor:pointer;user-select:none}
-.phase-name{font-size:clamp(2.2rem,9vw,4rem);font-weight:600;text-transform:uppercase;letter-spacing:.02em;line-height:1}
-.clock{font-size:clamp(7rem,38vw,17rem);font-weight:600;line-height:.95;font-variant-numeric:tabular-nums;letter-spacing:-.02em;margin:.08em 0}
+.phase-name{font-size:clamp(1.6rem,min(9vw,6vh),4rem);font-weight:600;text-transform:uppercase;letter-spacing:.02em;line-height:1}
+.clock{font-size:clamp(4.5rem,min(38vw,30vh),17rem);font-weight:600;line-height:.95;font-variant-numeric:tabular-nums;letter-spacing:-.02em;margin:.08em 0}
 .counters{display:flex;gap:28px;justify-content:center;text-transform:uppercase;font-size:1.05rem;letter-spacing:.05em;font-weight:500}
 .counters b{display:block;font-size:2.2rem;font-weight:600;letter-spacing:0;font-variant-numeric:tabular-nums;line-height:1.1}
 .paused-tag{margin-top:14px;font-size:1.2rem;text-transform:uppercase;letter-spacing:.12em;border:2px solid currentColor;padding:2px 14px;border-radius:6px}
@@ -240,6 +240,39 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .sess-del{grid-row:1/4;grid-column:2;color:var(--muted);padding:8px;border-radius:10px;text-transform:uppercase;font-size:.85rem}
 .sess-del.confirm{background:var(--rest);color:#fff}
 .section-title{color:var(--muted);text-transform:uppercase;font-size:.95rem;letter-spacing:.06em;margin:0}
+/* Tela deitada (celular na horizontal): luta em duas colunas e interface mais compacta */
+@media (orientation:landscape) and (max-height:600px){
+  .run{display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,34%);grid-template-rows:auto minmax(0,1fr);column-gap:28px}
+  .run-head{grid-column:1/-1;padding-top:8px}
+  .run-main{grid-column:1;grid-row:2;padding-bottom:8px}
+  .run-foot{grid-column:2;grid-row:2;justify-content:center;padding:4px 0 12px}
+  .phase-name{font-size:min(5vw,10vh)}
+  .clock{font-size:min(23vw,50vh);margin:.02em 0}
+  .theme-name{font-size:min(3.4vw,7.5vh);margin-top:.15em;border-width:2px}
+  .theme-name.next{font-size:min(2.6vw,5.5vh)}
+  .counters{gap:20px;font-size:.85rem}
+  .counters b{font-size:min(1.9rem,8vh)}
+  .paused-tag{margin-top:6px;font-size:1rem}
+  .next{flex-direction:column;gap:4px;font-size:.95rem}
+  .ctrls{grid-template-columns:1fr 1fr}
+  .ctrls .main{grid-column:1/-1;grid-row:1}
+  .ctrls button{padding:12px 0}
+  .top{padding-block:6px;font-size:1.15rem}
+  .tabs{padding-top:4px;padding-bottom:calc(4px + env(safe-area-inset-bottom,0px))}
+  .tab{flex-direction:row;justify-content:center;gap:8px;padding:6px 0}
+  .tab svg{width:22px;height:22px}
+  .band{padding:8px 0;font-size:1.1rem;margin-top:8px}
+  .row{padding:8px 0}
+  .row .name{font-size:1.2rem}
+  .row .val{font-size:2.2rem}
+  .start{margin-block:12px 14px;padding:12px}
+  .sheet{gap:12px;padding-top:14px;border-radius:16px 16px 0 0}
+  .field input{font-size:2.4rem}
+  .colon{font-size:2.4rem;padding-bottom:52px}
+  .step button{height:38px}
+  .sw{padding-top:12px;gap:12px}
+  .sw-clock{font-size:min(14vw,30vh)}
+}
 @media (prefers-reduced-motion:reduce){.run{transition:none}}
 </style>
 </head>

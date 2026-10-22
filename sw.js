@@ -1,5 +1,5 @@
 // Mude a versão sempre que atualizar os arquivos, para os aparelhos baixarem a nova versão.
-const CACHE = 'bjj-timer-v4';
+const CACHE = 'bjj-timer-v5';
 const ASSETS = ['./', './index.html', './manifest.webmanifest',
   './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png', './icons/apple-touch-icon.png'];
 
