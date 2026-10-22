@@ -188,6 +188,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .seg.two{grid-template-columns:1fr 1fr}
 .note{margin:0;color:var(--muted);font-size:.9rem;line-height:1.35}
 .note:empty{display:none}
+.app-version{text-align:center;padding-top:8px}
 .run-actions{display:flex;gap:8px}
 .run-head{gap:10px}
 .run-head .icon-btn{padding:4px 10px;display:flex;align-items:center}
@@ -333,6 +334,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
       <div class="cal" id="cal"></div>
       <h3 class="section-title">Treinos do mês</h3>
       <div class="sessions" id="sessions"></div>
+      <p class="note app-version">Versão 7</p>
     </div>
   </main>
 
@@ -899,8 +901,8 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     if(soundMode!=='voice' || !tts || !text) return;
     try{
       tts.cancel();
-      // "Oss" em maiúsculas/curto é lido como sigla (soletrado); "Ós" sai com a pronúncia do tatame.
-      const u = new SpeechSynthesisUtterance(text.replace(/\boss\b/gi, 'Ós'));
+      // "Oss" é lido como sigla (soletrado); escrito como se fala, sai com a pronúncia do tatame.
+      const u = new SpeechSynthesisUtterance(text.replace(/\boss\b/gi, 'Ôs'));
       u.lang = 'pt-BR'; if(ptVoice) u.voice = ptVoice; u.rate = 1.05;
       tts.speak(u);
     }catch(e){}
@@ -1382,7 +1384,14 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+  window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js', {updateViaCache:'none'}).then(r=>r.update()).catch(()=>{}));
+  // Quando uma versão nova assume, recarrega uma vez (só fora do treino, para não interromper a luta).
+  let reloaded = false;
+  const hadController = !!navigator.serviceWorker.controller;   // na primeira visita não há o que atualizar
+  navigator.serviceWorker.addEventListener('controllerchange', ()=>{
+    if(!hadController || reloaded || !document.getElementById('run').hidden) return;
+    reloaded = true; location.reload();
+  });
 }
 </script>
 </body>

@@ -1,5 +1,5 @@
 // Mude a versão sempre que atualizar os arquivos, para os aparelhos baixarem a nova versão.
-const CACHE = 'bjj-timer-v6';
+const CACHE = 'bjj-timer-v7';
 const ASSETS = ['./', './index.html', './manifest.webmanifest',
   './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png', './icons/apple-touch-icon.png'];
 
@@ -13,11 +13,21 @@ self.addEventListener('activate', e => {
     .then(() => self.clients.claim()));
 });
 
-// Arquivos do app: cache primeiro. Fontes do Google: guardadas na primeira visita.
+// Página (HTML): rede primeiro, para cada atualização aparecer na hora; sem internet, usa a cópia guardada.
+// Ícones e fontes: cache primeiro.
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
+  const url = new URL(e.request.url);
+  const isPage = e.request.mode === 'navigate' || (url.origin === location.origin && /\/(index\.html)?$/.test(url.pathname));
+  if (isPage) {
+    e.respondWith(fetch(e.request, {cache: 'no-store'}).then(res => {
+      const copy = res.clone();
+      caches.open(CACHE).then(c => c.put('./index.html', copy));
+      return res;
+    }).catch(() => caches.match('./index.html').then(hit => hit || caches.match('./'))));
+    return;
+  }
   e.respondWith(caches.match(e.request).then(hit => hit || fetch(e.request).then(res => {
-    const url = new URL(e.request.url);
     if (url.origin === location.origin || url.host.endsWith('fonts.googleapis.com') || url.host.endsWith('fonts.gstatic.com')) {
       const copy = res.clone();
       caches.open(CACHE).then(c => c.put(e.request, copy));
