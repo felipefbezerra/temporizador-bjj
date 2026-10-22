@@ -334,7 +334,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
       <div class="cal" id="cal"></div>
       <h3 class="section-title">Treinos do mês</h3>
       <div class="sessions" id="sessions"></div>
-      <p class="note app-version">Versão 7</p>
+      <p class="note app-version">Versão 8</p>
     </div>
   </main>
 
@@ -960,52 +960,24 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     } else { try{ new Notification(title, opts); }catch(err){} }
   }
 
-  /* ---------- Segundo plano: áudio silencioso + controles na tela de bloqueio ---------- */
-  // Um áudio mudo em loop mantém o navegador tratando o treino como mídia tocando,
-  // o que evita que o celular congele o timer e mostra os controles na tela de bloqueio.
-  let keepAlive = null;
-  function silentWav(){
-    const rate = 8000, n = rate, buf = new ArrayBuffer(44+n), v = new DataView(buf);
-    const str = (o,t)=>{ for(let i=0;i<t.length;i++) v.setUint8(o+i, t.charCodeAt(i)); };
-    str(0,'RIFF'); v.setUint32(4,36+n,true); str(8,'WAVE'); str(12,'fmt '); v.setUint32(16,16,true);
-    v.setUint16(20,1,true); v.setUint16(22,1,true); v.setUint32(24,rate,true); v.setUint32(28,rate,true);
-    v.setUint16(32,1,true); v.setUint16(34,8,true); str(36,'data'); v.setUint32(40,n,true);
-    for(let i=0;i<n;i++) v.setUint8(44+i,128);
-    return URL.createObjectURL(new Blob([buf], {type:'audio/wav'}));
-  }
+  /* ---------- Segundo plano: tom inaudível pelo Web Audio ---------- */
+  // Um tom grave e baixíssimo, que ninguém escuta, faz o navegador tratar o treino como áudio tocando,
+  // então o timer, os bipes e a voz seguem com o app em segundo plano. Diferente de um <audio>,
+  // o Web Audio não toma o foco de áudio do celular: Spotify e YouTube continuam tocando junto.
+  let hum = null;
   function startKeepAlive(){
+    const a = audio(); if(!a || hum) return;
     try{
-      if(!keepAlive){ keepAlive = new Audio(silentWav()); keepAlive.loop = true; keepAlive.setAttribute('playsinline',''); }
-      const pr = keepAlive.play(); if(pr && pr.catch) pr.catch(()=>{});
+      const o = a.createOscillator(), g = a.createGain();
+      o.frequency.value = 25; g.gain.value = 0.002;
+      o.connect(g).connect(a.destination); o.start();
+      hum = o;
     }catch(e){}
-    if('mediaSession' in navigator){
-      const ms = navigator.mediaSession;
-      const set = (a,f)=>{ try{ ms.setActionHandler(a,f); }catch(e){} };
-      set('play', ()=>{ if(run && run.paused) togglePause(); });
-      set('pause', ()=>{ if(run && !run.paused && !run.finished) togglePause(); });
-      set('nexttrack', ()=>jump(1));
-      set('previoustrack', ()=>jump(-1));
-    }
   }
   function stopKeepAlive(){
-    try{ keepAlive && keepAlive.pause(); }catch(e){}
-    if('mediaSession' in navigator){ try{ navigator.mediaSession.metadata = null; navigator.mediaSession.playbackState = 'none'; }catch(e){} }
+    try{ hum && hum.stop(); }catch(e){}
+    hum = null;
   }
-  let lastMeta = '';
-  function updateMediaSession(){
-    if(!('mediaSession' in navigator) || !run || typeof MediaMetadata==='undefined') return;
-    const s = run.seq[run.i];
-    const title = run.finished ? 'Treino concluído' : (s.type==='work' && s.theme ? s.theme : phaseName(run.mode, s))+' · '+fmtClock(run.remaining);
-    if(title===lastMeta) return;
-    lastMeta = title;
-    const sub = s.round ? (run.mode==='circuito' ? 'Estação '+s.round+'/'+run.c.stations.length+' · Volta '+s.cycle+'/'+run.c.rounds : 'Ronda '+s.round+'/'+run.c.rounds) : MODE_NAME[run.mode];
-    try{
-      navigator.mediaSession.metadata = new MediaMetadata({title, artist:sub, album:'Temporizador BJJ',
-        artwork:[{src:'icons/icon-192.png', sizes:'192x192', type:'image/png'}, {src:'icons/icon-512.png', sizes:'512x512', type:'image/png'}]});
-      navigator.mediaSession.playbackState = run.paused || run.finished ? 'paused' : 'playing';
-    }catch(e){}
-  }
-
   /* ---------- Janela flutuante (picture-in-picture) ---------- */
   // Computador (Chrome/Edge): Document Picture-in-Picture. Celular: um vídeo gerado de um canvas.
   let pip = null;
@@ -1097,8 +1069,31 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
   }
   function unlockScreen(){ try{ wakeLock && wakeLock.release(); }catch(e){} wakeLock = null; }
   document.addEventListener('visibilitychange', ()=>{
-    if(run && document.visibilityState==='visible'){ if(!run.paused && !run.finished) lockScreen(); step(); }
+    if(run && document.visibilityState==='visible'){ audio(); if(!run.paused && !run.finished) lockScreen(); step(); }
+    if(document.visibilityState==='hidden') persistRun();
   });
+  window.addEventListener('pagehide', ()=>persistRun());
+
+  // O treino em andamento fica salvo no aparelho. Se o celular fechar o app em segundo plano
+  // (comum ao abrir outro app pesado), ele volta de onde estava, com o tempo que passou descontado.
+  function persistRun(){
+    if(run && !run.finished){ run.savedAt = Date.now(); store.set('bjj.run', run); }
+    else clearPersisted();
+  }
+  function clearPersisted(){ try{ localStorage.removeItem('bjj.run'); }catch(e){} }
+  function resumeRun(){
+    const r = store.get('bjj.run');
+    if(!r || !r.seq || r.finished || Date.now() - (r.savedAt||0) > 6*3600e3){ clearPersisted(); return; }
+    run = r;
+    $('run-mode').textContent = MODE_NAME[run.mode] || 'Combate';
+    $('run-belt').innerHTML = beltHTML(belt, true);
+    $('run').hidden = false;
+    if(!run.paused) lockScreen();
+    enterPhase(false);
+    loop();
+    // O navegador só libera o som depois de um toque na tela.
+    document.addEventListener('pointerdown', ()=>{ if(run) startKeepAlive(); }, {once:true, capture:true});
+  }
 
   function startRun(){
     const c = {...draft[tab]};
@@ -1107,8 +1102,8 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     assignThemes(tab, c, seq);
     audio();
     run = {mode:tab, c, seq, i:0, paused:false, remaining:seq[0].dur, endAt:0, lastTick:null, finished:false,
-      startedAt:Date.now(), lastNow:performance.now(), active:0, work:0, rounds:0, done:[], saved:false};
-    run.endAt = performance.now() + run.remaining*1000;
+      startedAt:Date.now(), lastNow:Date.now(), active:0, work:0, rounds:0, done:[], saved:false};
+    run.endAt = Date.now() + run.remaining*1000;
     $('run-mode').textContent = MODE_NAME[tab];
     $('run-belt').innerHTML = beltHTML(belt, true);
     $('run').hidden = false;
@@ -1134,6 +1129,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     if(sound) notifyPhase(run);
     renderCounters();
     drawPip();
+    persistRun();
   }
   function renderCounters(){
     const s = run.seq[run.i];
@@ -1157,7 +1153,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
   }
   function step(){
       if(!run) return;
-      const now = performance.now();
+      const now = Date.now();
       if(!run.paused && !run.finished){
         const dt = Math.min(600, (now - run.lastNow)/1000);
         run.active += dt;
@@ -1184,8 +1180,8 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
         }
       }
       draw();
-      updateMediaSession();
       drawPip();
+      if(!run.savedAt || now - run.savedAt > 2000) persistRun();
   }
   function draw(){
     const s = run.seq[run.i];
@@ -1225,16 +1221,16 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     $('run-next').textContent = ok ? 'Salvo em Treinos. Oss!' : 'Bom treino. Oss!';
     $('run').style.setProperty('--phase', 'var(--work)');
     $('run').classList.remove('light-text'); $('run').classList.add('dark-text');
-    unlockScreen();
-    drawPip(); updateMediaSession();
+    unlockScreen(); clearPersisted();
+    drawPip();
   }
   function togglePause(){
     if(!run) return;
     audio();
     if(run.finished){ stopRun(); startRun(); return; }
     run.paused = !run.paused;
-    if(!run.paused){ run.endAt = performance.now() + run.remaining*1000; lockScreen(); startKeepAlive(); }
-    lastMeta = ''; updateMediaSession(); drawPip();
+    if(!run.paused){ run.endAt = Date.now() + run.remaining*1000; lockScreen(); startKeepAlive(); }
+    drawPip(); persistRun();
   }
   function jump(dir){
     if(!run || run.finished) return;
@@ -1249,13 +1245,13 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
       else run.i = ni;
     }
     run.remaining = run.seq[run.i].dur;
-    run.endAt = performance.now() + run.remaining*1000;
+    run.endAt = Date.now() + run.remaining*1000;
     enterPhase(!run.paused);
   }
   function stopRun(){
     if(run && !run.finished) saveRun();
     closePip();
-    clearInterval(timer); run = null; $('run').hidden = true; unlockScreen(); stopKeepAlive(); lastMeta = '';
+    clearInterval(timer); run = null; $('run').hidden = true; unlockScreen(); stopKeepAlive(); clearPersisted();
     if(tts) tts.cancel();
     if(tab==='hist') render();
   }
@@ -1379,6 +1375,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
   applyTheme();
   renderSettings();
   render(); swDraw();
+  resumeRun();
 })();
 </script>
 
