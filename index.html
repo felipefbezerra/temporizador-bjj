@@ -964,6 +964,8 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
   // Um tom grave e baixíssimo, que ninguém escuta, faz o navegador tratar o treino como áudio tocando,
   // então o timer, os bipes e a voz seguem com o app em segundo plano. Diferente de um <audio>,
   // o Web Audio não toma o foco de áudio do celular: Spotify e YouTube continuam tocando junto.
+  // iPhone (Safari 16.4+): o som do app mistura com a música de outros apps em vez de interrompê-la.
+  if(navigator.audioSession){ try{ navigator.audioSession.type = 'ambient'; }catch(e){} }
   let hum = null;
   function startKeepAlive(){
     const a = audio(); if(!a || hum) return;
