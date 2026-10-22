@@ -899,7 +899,8 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     if(soundMode!=='voice' || !tts || !text) return;
     try{
       tts.cancel();
-      const u = new SpeechSynthesisUtterance(text);
+      // "Oss" em maiúsculas/curto é lido como sigla (soletrado); "Ós" sai com a pronúncia do tatame.
+      const u = new SpeechSynthesisUtterance(text.replace(/\boss\b/gi, 'Ós'));
       u.lang = 'pt-BR'; if(ptVoice) u.voice = ptVoice; u.rate = 1.05;
       tts.speak(u);
     }catch(e){}
