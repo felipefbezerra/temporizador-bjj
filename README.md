@@ -6,7 +6,7 @@ Temporizador de combate, circuito e cronômetro para treinos e lutas de jiu-jits
 
 - **Combate** com predefinições de BJJ (tempos de luta IBJJF por faixa, rola 6×6).
 - **Voz em português:** anuncia cada fase, a posição ou estação, "trinta segundos", "dez segundos" e "última ronda", usando a voz do próprio celular. Dá para trocar por só bipes ou mudo na aba Treinos.
-- **Segundo plano:** o timer continua contando fora do app, mostra a fase e o tempo na tela de bloqueio (com pausar e pular) e pode avisar cada troca de fase.
+- **Segundo plano:** o timer continua contando fora do app, toca junto com Spotify ou YouTube, volta de onde parou se o celular fechar o app e pode avisar cada troca de fase.
 - **Janela flutuante:** o botão Janela abre o timer numa janelinha por cima dos outros apps, onde o navegador permite.
 - **Circuito:** monte estações com nome e tempo próprios (sprawl, fuga de quadril, drills), descanso entre estações, número de voltas e descanso entre voltas.
 - **Temas de posição:** escolha posições (passagem, costas, meia-guarda ou as suas) e o app mostra uma por ronda, em ordem ou sorteada.
